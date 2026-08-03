@@ -1,7 +1,11 @@
+from pathlib import Path
+
 import pytest
 from streamlit.testing.v1 import AppTest
 
 from client import AgentClient
+
+APP_PATH = (Path.cwd() / "src" / "streamlit_app.py").resolve()
 
 
 @pytest.mark.docker
@@ -22,7 +26,7 @@ def test_service_with_app():
 
     This test requires the service container to be running with USE_FAKE_MODEL=true
     """
-    at = AppTest.from_file("../../src/streamlit_app.py").run()
+    at = AppTest.from_file(str(APP_PATH)).run()
     assert at.chat_message[0].avatar == "assistant"
     welcome = at.chat_message[0].markdown[0].value
     assert welcome.startswith("Hello! I'm an AI-powered research assistant")

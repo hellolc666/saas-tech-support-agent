@@ -140,6 +140,8 @@ celerybeat.pid
 
 # Environments
 .env
+.env.*
+!.env.*.example
 .python-version
 .venv
 env/
@@ -182,12 +184,21 @@ cython_debug/
 # Data
 *.docx
 *.pdf
+data/raw/
+data/*.db
 
 # Chroma db
 *.db
+data/chroma/
+data/models/
+data/logs/
 *.sqlite3
 *.bin
 
 # Private Credentials, ignore everything in the folder but the .gitkeep file
 privatecredentials/*
 !privatecredentials/.gitkeep
+
+# Local review and personal preparation artifacts
+tmp/
+reports/

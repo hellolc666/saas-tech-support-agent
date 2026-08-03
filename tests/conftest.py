@@ -25,5 +25,12 @@ def pytest_collection_modifyitems(config, items):
 @pytest.fixture
 def mock_env():
     """Fixture to ensure environment is clean for each test."""
-    with patch.dict(os.environ, {}, clear=True):
+    # pathlib.Path.home() needs these values on Windows. Preserve only the
+    # operating-system paths while still clearing application configuration.
+    preserved_system_env = {
+        key: os.environ[key]
+        for key in ("USERPROFILE", "HOMEDRIVE", "HOMEPATH", "SYSTEMROOT")
+        if key in os.environ
+    }
+    with patch.dict(os.environ, preserved_system_env, clear=True):
         yield

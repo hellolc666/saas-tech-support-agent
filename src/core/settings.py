@@ -92,6 +92,12 @@ class Settings(BaseSettings):
     USE_FAKE_MODEL: bool = False
     OPENROUTER_API_KEY: str | None = None
 
+    # Alibaba Cloud Model Studio (OpenAI-compatible API)
+    DASHSCOPE_API_KEY: SecretStr | None = None
+    DASHSCOPE_BASE_URL: str | None = None
+    DASHSCOPE_MODEL: str | None = None
+    CUSTOMER_SUPPORT_MODE: str = "auto"
+
     # If DEFAULT_MODEL is None, it will be set in model_post_init
     DEFAULT_MODEL: AllModelEnum | None = None  # type: ignore[assignment]
     AVAILABLE_MODELS: set[AllModelEnum] = set()  # type: ignore[assignment]

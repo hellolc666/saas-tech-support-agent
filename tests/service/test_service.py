@@ -151,6 +151,7 @@ def test_invoke_interrupt(test_client, mock_agent) -> None:
     mock_agent.ainvoke.return_value = [
         ("values", {"messages": [AIMessage(content=ANSWER)]}),
         ("updates", {"__interrupt__": [Interrupt(value=INTERRUPT)]}),
+        ("values", {"messages": [AIMessage(content="I will execute the tool.")]}),
     ]
 
     response = test_client.post("/invoke", json={"message": QUESTION})
@@ -367,10 +368,62 @@ def test_info(test_client, mock_settings) -> None:
         assert response.status_code == 200
         output = ServiceMetadata.model_validate(response.json())
 
-    assert output.default_agent == "research-assistant"
+    assert output.default_agent == "customer-support"
     assert len(output.agents) == 1
     assert output.agents[0].key == "base-agent"
     assert output.agents[0].description == "A base agent."
 
     assert output.default_model == OpenAIModelName.GPT_5_NANO
     assert output.models == [OpenAIModelName.GPT_5_MINI, OpenAIModelName.GPT_5_NANO]
+
+
+def test_readiness_uses_sqlite_by_default(test_client, monkeypatch) -> None:
+    monkeypatch.delenv("BUSINESS_DATABASE_TYPE", raising=False)
+
+    response = test_client.get("/ready")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": "ready",
+        "business_database": "sqlite",
+    }
+
+
+def test_readiness_checks_mysql(test_client, monkeypatch) -> None:
+    monkeypatch.setenv("BUSINESS_DATABASE_TYPE", "mysql")
+    result = {"status": "ready", "backend": "mysql", "order_count": 99441}
+
+    with patch(
+        "customer_support.mysql_store.database_healthcheck",
+        return_value=result,
+    ):
+        response = test_client.get("/ready")
+
+    assert response.status_code == 200
+    assert response.json() == result
+
+
+def test_read_only_database_browser_endpoints(test_client) -> None:
+    page = {
+        "table": "olist_orders",
+        "total": 99441,
+        "rows": [{"order_alias": "OL099422", "status_zh": "运输中"}],
+    }
+    with (
+        patch(
+            "customer_support.mysql_store.list_database_tables",
+            return_value=["olist_orders"],
+        ),
+        patch(
+            "customer_support.mysql_store.browse_database_table",
+            return_value=page,
+        ),
+    ):
+        tables_response = test_client.get("/database/tables")
+        rows_response = test_client.get(
+            "/database/tables/olist_orders",
+            params={"limit": 20, "offset": 0, "order_alias": "OL099422"},
+        )
+
+    assert tables_response.json() == {"tables": ["olist_orders"]}
+    assert rows_response.json() == page
