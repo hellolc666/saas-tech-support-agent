@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from typing import Annotated, Any
 from uuid import UUID, uuid4
 
-from fastapi import APIRouter, Depends, FastAPI, HTTPException, status
+from fastapi import APIRouter, Depends, FastAPI, HTTPException, Query, status
 from fastapi.responses import StreamingResponse
 from fastapi.routing import APIRoute
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -43,6 +43,53 @@ from service.utils import (
 
 warnings.filterwarnings("ignore", category=LangChainBetaWarning)
 logger = logging.getLogger(__name__)
+
+
+def _is_hitl_request(value: Any) -> bool:
+    return (
+        isinstance(value, dict)
+        and isinstance(value.get("action_requests"), list)
+        and bool(value["action_requests"])
+    )
+
+
+def _format_interrupt(value: Any) -> str:
+    """Turn a structured tool approval request into a user-facing message."""
+    if not _is_hitl_request(value):
+        return str(value)
+
+    actions = value["action_requests"]
+    descriptions = [
+        f"- `{action['name']}`：{json.dumps(action['args'], ensure_ascii=False)}"
+        for action in actions
+    ]
+    return (
+        "即将执行以下写操作：\n\n"
+        + "\n".join(descriptions)
+        + "\n\n请回复“确认”执行，或回复“取消”。"
+    )
+
+
+def _hitl_resume_value(message: str, value: Any) -> Any:
+    """Map a chat confirmation to LangChain's structured HITL decision."""
+    if not _is_hitl_request(value):
+        return message
+
+    normalized = message.strip().lower().rstrip("。！!")
+    approve_words = {"确认", "同意", "批准", "执行", "好的", "是"}
+    approved = normalized in approve_words
+    decisions = []
+    for _ in value["action_requests"]:
+        if approved:
+            decisions.append({"type": "approve"})
+        else:
+            decisions.append(
+                {
+                    "type": "reject",
+                    "message": "用户未明确确认或已取消，本次写操作未执行。",
+                }
+            )
+    return {"decisions": decisions}
 
 
 def custom_generate_unique_id(route: APIRoute) -> str:
@@ -167,7 +214,8 @@ async def _handle_input(user_input: UserInput, agent: AgentGraph) -> tuple[dict[
     input: Command | dict[str, Any]
     if interrupted_tasks:
         # assume user input is response to resume agent execution from interrupt
-        input = Command(resume=user_input.message)
+        interrupt_value = interrupted_tasks[0].interrupts[0].value
+        input = Command(resume=_hitl_resume_value(user_input.message, interrupt_value))
     else:
         input = {"messages": [HumanMessage(content=user_input.message)]}
 
@@ -200,18 +248,21 @@ async def invoke(user_input: UserInput, agent_id: str = DEFAULT_AGENT) -> ChatMe
 
     try:
         response_events: list[tuple[str, Any]] = await agent.ainvoke(**kwargs, stream_mode=["updates", "values"])  # type: ignore # fmt: skip
-        response_type, response = response_events[-1]
-        if response_type == "values":
-            # Normal response, the agent completed successfully
-            output = langchain_to_chat_message(response["messages"][-1])
-        elif response_type == "updates" and "__interrupt__" in response:
-            # The last thing to occur was an interrupt
-            # Return the value of the first interrupt as an AIMessage
-            output = langchain_to_chat_message(
-                AIMessage(content=response["__interrupt__"][0].value)
-            )
-        else:
-            raise ValueError(f"Unexpected response type: {response_type}")
+        output = None
+        for response_type, response in response_events:
+            if response_type == "updates" and "__interrupt__" in response:
+                output = langchain_to_chat_message(
+                    AIMessage(content=_format_interrupt(response["__interrupt__"][0].value))
+                )
+                break
+        if output is None:
+            for response_type, response in reversed(response_events):
+                if response_type == "values":
+                    output = langchain_to_chat_message(response["messages"][-1])
+                    break
+        if output is None:
+            event_types = [response_type for response_type, _ in response_events]
+            raise ValueError(f"No final values or interrupt event found: {event_types}")
 
         output.run_id = str(run_id)
         return output
@@ -254,7 +305,9 @@ async def message_generator(
                     if node == "__interrupt__":
                         interrupt: Interrupt
                         for interrupt in updates:
-                            new_messages.append(AIMessage(content=interrupt.value))
+                            new_messages.append(
+                                AIMessage(content=_format_interrupt(interrupt.value))
+                            )
                         continue
                     updates = updates or {}
                     update_messages = updates.get("messages", [])
@@ -432,6 +485,46 @@ async def health_check():
             health_status["langfuse"] = "disconnected"
 
     return health_status
+
+
+@app.get("/ready")
+def readiness_check():
+    """Readiness probe that also verifies the configured business database."""
+    import os
+
+    if os.getenv("BUSINESS_DATABASE_TYPE", "sqlite").lower() != "mysql":
+        return {"status": "ready", "business_database": "sqlite"}
+    try:
+        from customer_support.mysql_store import database_healthcheck
+
+        return database_healthcheck()
+    except Exception as error:
+        logger.error("Business database readiness check failed: %s", error)
+        raise HTTPException(status_code=503, detail="Business database is not ready") from error
+
+
+@app.get("/database/tables")
+def database_tables():
+    """List tables for the local read-only database learning page."""
+    from customer_support.mysql_store import list_database_tables
+
+    return {"tables": list_database_tables()}
+
+
+@app.get("/database/tables/{table}")
+def database_table_rows(
+    table: str,
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    order_alias: str | None = None,
+):
+    """Return a read-only page; arbitrary SQL and write operations are not exposed."""
+    from customer_support.mysql_store import browse_database_table
+
+    try:
+        return browse_database_table(table, limit, offset, order_alias)
+    except ValueError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
 
 
 app.include_router(router)

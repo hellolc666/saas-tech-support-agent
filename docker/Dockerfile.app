@@ -1,22 +1,22 @@
-FROM python:3.13.14-slim
+FROM ghcr.io/astral-sh/uv:0.11.26-python3.12-trixie-slim
 
 WORKDIR /app
 
-ENV UV_PROJECT_ENVIRONMENT="/usr/local/"
-ENV UV_COMPILE_BYTECODE=1
+ENV UV_PROJECT_ENVIRONMENT="/usr/local/" \
+    UV_COMPILE_BYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
 
-COPY pyproject.toml .
-COPY uv.lock .
-RUN pip install --no-cache-dir uv==0.11.26
-
-# Install only the dependencies needed for the client application
-# --frozen: Use exact versions from the lock file
-# --only-group client: Only install dependencies marked as part of the "client" group in pyproject.toml
-RUN uv sync --frozen --only-group client
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --only-group client \
+    && rm -rf /root/.cache/uv
 
 COPY src/client/ ./client/
 COPY src/schema/ ./schema/
 COPY src/voice/ ./voice/
-COPY src/streamlit_app.py .
+COPY src/streamlit_app.py ./
+COPY src/mysql_browser.py ./
 
-CMD ["streamlit", "run", "streamlit_app.py"]
+EXPOSE 8501
+
+CMD ["streamlit", "run", "streamlit_app.py", "--server.address=0.0.0.0"]

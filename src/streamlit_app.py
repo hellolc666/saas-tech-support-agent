@@ -24,7 +24,7 @@ from voice import VoiceManager
 # The app heavily uses AgentClient to interact with the agent's FastAPI endpoints.
 
 
-APP_TITLE = "Agent Service Toolkit"
+APP_TITLE = "电商智能客服与工单助手"
 APP_ICON = "🧰"
 USER_ID_COOKIE = "user_id"
 
@@ -181,12 +181,20 @@ async def main() -> None:
 
         @st.dialog("Share/resume chat")
         def share_chat_dialog() -> None:
-            session = st.runtime.get_instance()._session_mgr.list_active_sessions()[0]
-            st_base_url = urllib.parse.urlunparse(
-                [session.client.request.protocol, session.client.request.host, "", "", "", ""]
+            # Use Streamlit's public request context. The former implementation
+            # reached into private session internals, which changed in Streamlit
+            # 1.58 and caused an AttributeError when opening this dialog.
+            try:
+                current_url = str(st.context.url)
+            except Exception:
+                current_url = os.getenv("STREAMLIT_PUBLIC_URL", "http://127.0.0.1:8501")
+            parsed_url = urllib.parse.urlsplit(current_url)
+            st_base_url = urllib.parse.urlunsplit(
+                (parsed_url.scheme, parsed_url.netloc, parsed_url.path, "", "")
             )
             # if it's not localhost, switch to https by default
-            if not st_base_url.startswith("https") and "localhost" not in st_base_url:
+            is_local = parsed_url.hostname in {"localhost", "127.0.0.1", "0.0.0.0"}
+            if not st_base_url.startswith("https") and not is_local:
                 st_base_url = st_base_url.replace("http", "https")
             # Include both thread_id and user_id in the URL for sharing to maintain user identity
             chat_url = (
@@ -208,6 +216,10 @@ async def main() -> None:
 
     if len(messages) == 0:
         match agent_client.agent:
+            case "customer-support":
+                WELCOME = """你好！我是电商智能客服演示助手。
+                我可以查询政策、订单和退款资格，并在你确认后创建客服工单。
+                你可以先试试：查询订单 ORD1001，手机号后四位 8821"""
             case "chatbot":
                 WELCOME = "Hello! I'm a simple chatbot. Ask me anything!"
             case "interrupt-agent":
@@ -333,8 +345,22 @@ async def draw_messages(
     streaming_content = ""
     streaming_placeholder = None
 
+    # A tool call is normally followed immediately by a ToolMessage. HITL is the
+    # important exception: the graph emits an interrupt/approval message first,
+    # and the ToolMessage arrives only after the user resumes the run. Keep that
+    # non-tool message here so the outer loop can render it normally.
+    pending_msg: ChatMessage | str | None = None
+
     # Iterate over the messages and draw them
-    while msg := await anext(messages_agen, None):
+    while True:
+        if pending_msg is not None:
+            msg = pending_msg
+            pending_msg = None
+        else:
+            msg = await anext(messages_agen, None)
+        if msg is None:
+            break
+
         # str message represents an intermediate token being streamed
         if isinstance(msg, str):
             # If placeholder is empty, this is the first token of a new message
@@ -413,12 +439,19 @@ async def draw_messages(
                             status = call_results[tool_call["id"]]
                             status.write("Input:")
                             status.write(tool_call["args"])
-                            tool_result: ChatMessage = await anext(messages_agen)
+                            tool_result = await anext(messages_agen, None)
 
-                            if tool_result.type != "tool":
-                                st.error(f"Unexpected ChatMessage type: {tool_result.type}")
-                                st.write(tool_result)
-                                st.stop()
+                            if tool_result is None or tool_result.type != "tool":
+                                status.write("等待用户确认，请在下方输入“确认”或“取消”。")
+                                status.update(
+                                    label=f"⏸️ Waiting for approval: {tool_call['name']}",
+                                    state="complete",
+                                )
+                                # The interrupt prompt belongs to the normal message
+                                # stream; do not swallow it while looking for a tool
+                                # result.
+                                pending_msg = tool_result
+                                break
 
                             # Record the message if it's new, and update the correct
                             # status container with the result
@@ -429,6 +462,22 @@ async def draw_messages(
                             status.write("Output:")
                             status.write(tool_result.content)
                             status.update(state="complete")
+
+            # After an HITL resume, LangGraph may emit the ToolMessage without
+            # repeating the earlier AI tool-call message in this HTTP stream.
+            # Render it as a standalone result instead of treating it as invalid.
+            case "tool":
+                if is_new:
+                    st.session_state.messages.append(msg)
+
+                if last_message_type != "ai":
+                    last_message_type = "ai"
+                    st.session_state.last_message = st.chat_message("ai")
+
+                with st.session_state.last_message:
+                    status = st.status("🛠️ Tool result", state="complete")
+                    status.write("Output:")
+                    status.write(msg.content)
 
             case "custom":
                 # CustomData example used by the bg-task-agent
