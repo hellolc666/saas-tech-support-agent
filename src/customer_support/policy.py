@@ -6,8 +6,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-POLICY_PATH = Path("data/policies/customer_service_policy.md")
-
+#POLICY_PATH = Path("data/policies/customer_service_policy.md")
+POLICY_PATH = Path("data/policies/saas_support_guide.md")
 
 @dataclass(frozen=True)
 class PolicySection:
