@@ -24,7 +24,7 @@ from voice import VoiceManager
 # The app heavily uses AgentClient to interact with the agent's FastAPI endpoints.
 
 
-APP_TITLE = "电商智能客服与工单助手"
+APP_TITLE = "星河协作平台技术支持助手"
 APP_ICON = "🧰"
 USER_ID_COOKIE = "user_id"
 
@@ -217,9 +217,10 @@ async def main() -> None:
     if len(messages) == 0:
         match agent_client.agent:
             case "customer-support":
-                WELCOME = """你好！我是电商智能客服演示助手。
-                我可以查询政策、订单和退款资格，并在你确认后创建客服工单。
-                你可以先试试：查询订单 ORD1001，手机号后四位 8821"""
+                WELCOME = """你好！我是星河协作平台技术支持助手。
+                我可以检索报错、权限、部署、版本和导出文档，并提供来源。
+                你可以先试试：访问项目出现403无权限，如何排查？
+                当前提供知识问答；技术工单功能尚未接入。"""
             case "chatbot":
                 WELCOME = "Hello! I'm a simple chatbot. Ask me anything!"
             case "interrupt-agent":

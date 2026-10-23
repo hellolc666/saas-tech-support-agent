@@ -6,7 +6,7 @@ from langgraph.pregel import Pregel
 from agents.bg_task_agent.bg_task_agent import bg_task_agent
 from agents.chatbot import chatbot
 from agents.command_agent import command_agent
-from agents.customer_support_agent import customer_support_agent
+from agents.saas_support_agent import saas_support_agent as customer_support_agent
 from agents.github_mcp_agent.github_mcp_agent import github_mcp_agent
 from agents.interrupt_agent import interrupt_agent
 from agents.knowledge_base_agent import kb_agent
@@ -34,7 +34,7 @@ class Agent:
 
 agents: dict[str, Agent] = {
     "customer-support": Agent(
-        description="Qwen ecommerce support Agent with RAG, tools, and offline fallback.",
+        description="SaaS technical support with cited documents and offline fallback (read-only).",
         graph_like=customer_support_agent,
     ),
     "chatbot": Agent(description="A simple chatbot.", graph_like=chatbot),
