@@ -62,14 +62,32 @@ def test_concurrent_retries_create_exactly_one_ticket(demo_db):
     assert sorted(item["duplicate"] for item in outcomes) == [False, True, True, True]
 
 
-def test_agent_tool_deduplicates_identical_issue_and_rejects_secret_in_summary(demo_db):
+def test_agent_tool_deduplicates_submission_not_ticket_content(demo_db):
     args = {"app_id": "APP_DEMO_001", "access_code": "DEMO-ALPHA-4821",
             "category": "接口异常", "summary": "请求持续429"}
-    first = tools.create_technical_ticket_tool.invoke(args)
-    second = tools.create_technical_ticket_tool.invoke(args)
+    first = tools.create_technical_ticket_tool.invoke({**args, "submission_id": "request-A"})
+    second = tools.create_technical_ticket_tool.invoke({**args, "submission_id": "request-A"})
     assert first["ok"] and second["duplicate"] and first["ticket_id"] == second["ticket_id"]
+    another = tools.create_technical_ticket_tool.invoke({**args, "submission_id": "request-B"})
+    assert another["ok"] and not another["duplicate"]
+    assert another["ticket_id"] != first["ticket_id"]
+    conflict = tools.create_technical_ticket_tool.invoke(
+        {**args, "summary": "这是不同故障", "submission_id": "request-A"}
+    )
+    assert conflict["error_code"] == "IDEMPOTENCY_CONFLICT"
+    # Without an explicit submission ID, every direct tool call is new.
+    direct = tools.create_technical_ticket_tool.invoke(args)
+    assert direct["ticket_id"] not in {first["ticket_id"], another["ticket_id"]}
     args["summary"] = "验证码 DEMO-ALPHA-4821"
     assert not tools.create_technical_ticket_tool.invoke(args)["ok"]
+
+
+def test_new_mock_ticket_with_same_content_is_not_deduplicated():
+    first = agent._pending_ticket("问题是：请求持续429", "APP_DEMO_001", "DEMO-ALPHA-4821")
+    second = agent._pending_ticket("问题是：请求持续429", "APP_DEMO_001", "DEMO-ALPHA-4821")
+    assert first is not None and second is not None
+    assert first["summary"] == second["summary"]
+    assert first["idempotency_key"] != second["idempotency_key"]
 
 
 @pytest.mark.asyncio

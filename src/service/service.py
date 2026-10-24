@@ -64,7 +64,7 @@ def _format_interrupt(value: Any) -> str:
 
     actions = value["action_requests"]
     descriptions = [
-        f"- `{action['name']}`：{json.dumps({k: v for k, v in action['args'].items() if k != 'access_code'}, ensure_ascii=False)}"
+        f"- `{action['name']}`：{json.dumps({k: v for k, v in action['args'].items() if k not in {'access_code', 'submission_id'}}, ensure_ascii=False)}"
         for action in actions
     ]
     return (

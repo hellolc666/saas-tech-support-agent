@@ -9,6 +9,7 @@ import logging
 import re
 import time
 from typing import Any
+from uuid import uuid4
 
 from langchain.agents import create_agent
 from langchain.agents.middleware import (
@@ -202,6 +203,29 @@ async def report_tool_failure(request, handler):
     """Return a safe failure observation; never swallow graph interrupt control flow."""
     started = time.perf_counter()
     try:
+        if request.tool_call["name"] == "create_technical_ticket":
+            # A persisted tool-call ID survives HITL resume/retries. A new
+            # model call, even with identical ticket content, gets a new ID.
+            from langgraph.config import get_config
+
+            try:
+                config = get_config().get("configurable", {})
+            except RuntimeError:
+                config = {}
+            call_id = request.tool_call.get("id")
+            if not call_id:
+                raise ValueError("Ticket tool call must carry a stable ID")
+            # Include the human-turn index in case a model reuses call IDs
+            # across distinct turns in the same conversation.
+            messages = (request.state or {}).get("messages", [])
+            turn_index = sum(isinstance(m, HumanMessage) for m in messages)
+            fingerprint = hashlib.sha256(
+                f"{config.get('thread_id', '')}:{turn_index}:{call_id}".encode("utf-8")
+            ).hexdigest()
+            args = dict(request.tool_call["args"])
+            # Overwrite any model-supplied submission_id: it is server-owned.
+            args["submission_id"] = f"call-{fingerprint}"
+            request = request.override(tool_call={**request.tool_call, "args": args})
         result = await handler(request)
         payload = {}
         if isinstance(result, ToolMessage) and isinstance(result.content, str):
@@ -366,13 +390,13 @@ def _pending_ticket(text: str, app_id: str, code: str) -> dict[str, str] | None:
         return None
     summary = summary[:1000]
     category = "接口异常" if any(x in summary for x in ("429", "401", "接口")) else "技术咨询"
-    fingerprint = hashlib.sha256(f"{app_id}\n{category}\n{summary}".encode()).hexdigest()[:32]
     return {
         "app_id": app_id,
         "access_code": code,
         "category": category,
         "summary": summary,
-        "idempotency_key": f"mvp-{fingerprint}",
+        # A proposal is a submission; this persists in the graph checkpoint.
+        "idempotency_key": f"mock-{uuid4().hex}",
     }
 
 
