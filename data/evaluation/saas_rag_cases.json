@@ -1,0 +1,522 @@
+[
+  {
+    "id": "SAAS-001",
+    "kind": "answerable",
+    "category": "product",
+    "question": "星河协作平台主要用来做什么？",
+    "expected_title": "产品定义与适用范围",
+    "expected_phrase": "企业项目管理软件"
+  },
+  {
+    "id": "SAAS-002",
+    "kind": "answerable",
+    "category": "triage",
+    "question": "报技术故障前需要准备哪些信息？",
+    "expected_title": "问题排查前需要的信息",
+    "expected_phrase": "产品版本"
+  },
+  {
+    "id": "SAAS-003",
+    "kind": "answerable",
+    "category": "auth",
+    "question": "打开项目提示403，应该先核对什么？",
+    "expected_title": "403 无权限访问项目",
+    "expected_phrase": "所属企业"
+  },
+  {
+    "id": "SAAS-004",
+    "kind": "answerable",
+    "category": "auth",
+    "question": "接口提示401登录已失效，如何处理？",
+    "expected_title": "401 登录失效与令牌过期",
+    "expected_phrase": "重新登录"
+  },
+  {
+    "id": "SAAS-005",
+    "kind": "answerable",
+    "category": "auth",
+    "question": "访客可以修改任务吗？",
+    "expected_title": "成员角色与权限",
+    "expected_phrase": "访客只能查看"
+  },
+  {
+    "id": "SAAS-006",
+    "kind": "answerable",
+    "category": "deployment",
+    "question": "私有部署前要做哪些准备？",
+    "expected_title": "私有部署前的准备",
+    "expected_phrase": "先备份已有数据"
+  },
+  {
+    "id": "SAAS-007",
+    "kind": "answerable",
+    "category": "deployment",
+    "question": "私有部署启动时提示数据库连不上怎么办？",
+    "expected_title": "服务启动失败与数据库连接",
+    "expected_phrase": "数据库连接错误"
+  },
+  {
+    "id": "SAAS-008",
+    "kind": "answerable",
+    "category": "version",
+    "question": "1.0版本能批量导出吗？",
+    "expected_title": "版本兼容与批量导出",
+    "expected_phrase": "1.0 版本不支持批量导出"
+  },
+  {
+    "id": "SAAS-009",
+    "kind": "answerable",
+    "category": "export",
+    "question": "单次导出超过5000条任务怎么办？",
+    "expected_title": "导出失败与导出数量限制",
+    "expected_phrase": "5000 条任务记录"
+  },
+  {
+    "id": "SAAS-010",
+    "kind": "answerable",
+    "category": "version",
+    "question": "系统升级之前为什么要先在测试环境检查？",
+    "expected_title": "升级前检查与异常处理",
+    "expected_phrase": "测试环境验证"
+  },
+  {
+    "id": "SAAS-011",
+    "kind": "answerable",
+    "category": "ticket",
+    "question": "创建技术支持工单前，需要我确认吗？",
+    "expected_title": "技术支持工单所需信息",
+    "expected_phrase": "明确确认"
+  },
+  {
+    "id": "SAAS-012",
+    "kind": "answerable",
+    "category": "unknown_policy",
+    "question": "能从知识库直接知道合同报价吗？",
+    "expected_title": "知识库未覆盖的问题",
+    "expected_phrase": "收费报价"
+  },
+  {
+    "id": "SAAS-013",
+    "kind": "answerable",
+    "category": "rate_limit",
+    "question": "接口出现429怎么排查？",
+    "expected_title": "429 请求过多与配额",
+    "expected_phrase": "限流窗口"
+  },
+  {
+    "id": "SAAS-014",
+    "kind": "answerable",
+    "category": "api_errors",
+    "question": "接口返回400 INVALID_ARGUMENT 是什么问题？",
+    "expected_title": "400 请求参数错误",
+    "expected_phrase": "必填字段"
+  },
+  {
+    "id": "SAAS-015",
+    "kind": "answerable",
+    "category": "api_errors",
+    "question": "传参格式错了请求被拒，该检查JSON还是登录状态？",
+    "expected_title": "400 请求参数错误",
+    "expected_phrase": "必填字段"
+  },
+  {
+    "id": "SAAS-016",
+    "kind": "answerable",
+    "category": "api_errors",
+    "question": "任务接口返回404就说明任务被删除了吗？",
+    "expected_title": "404 项目或任务不存在",
+    "expected_phrase": "未授权访问"
+  },
+  {
+    "id": "SAAS-017",
+    "kind": "answerable",
+    "category": "api_errors",
+    "question": "项目ID明明存在却返回404，该从什么方面排查？",
+    "expected_title": "404 项目或任务不存在",
+    "expected_phrase": "未授权访问"
+  },
+  {
+    "id": "SAAS-018",
+    "kind": "answerable",
+    "category": "api_errors",
+    "question": "两个成员同时改任务出现409怎么办？",
+    "expected_title": "409 并发更新冲突",
+    "expected_phrase": "重新读取最新任务版本"
+  },
+  {
+    "id": "SAAS-019",
+    "kind": "answerable",
+    "category": "api_errors",
+    "question": "VERSION_CONFLICT 能直接覆盖他人的修改吗？",
+    "expected_title": "409 并发更新冲突",
+    "expected_phrase": "重新读取最新任务版本"
+  },
+  {
+    "id": "SAAS-020",
+    "kind": "answerable",
+    "category": "api_errors",
+    "question": "创建任务接口报500后可以直接重试吗？",
+    "expected_title": "500 服务内部错误",
+    "expected_phrase": "幂等标识"
+  },
+  {
+    "id": "SAAS-021",
+    "kind": "answerable",
+    "category": "api_errors",
+    "question": "服务器内部错误需要保留哪些线索并避免重复写入？",
+    "expected_title": "500 服务内部错误",
+    "expected_phrase": "幂等标识"
+  },
+  {
+    "id": "SAAS-022",
+    "kind": "answerable",
+    "category": "api_errors",
+    "question": "网关提示502应该查哪里？",
+    "expected_title": "502 网关或上游服务异常",
+    "expected_phrase": "上游健康状态"
+  },
+  {
+    "id": "SAAS-023",
+    "kind": "answerable",
+    "category": "api_errors",
+    "question": "私有部署遇到上游502，需要看代理日志还是先删库？",
+    "expected_title": "502 网关或上游服务异常",
+    "expected_phrase": "上游健康状态"
+  },
+  {
+    "id": "SAAS-024",
+    "kind": "answerable",
+    "category": "api_errors",
+    "question": "接口503时可以高频无限重试吗？",
+    "expected_title": "503 维护或服务暂不可用",
+    "expected_phrase": "退避策略"
+  },
+  {
+    "id": "SAAS-025",
+    "kind": "answerable",
+    "category": "api_errors",
+    "question": "服务暂不可用是否就一定在计划维护？",
+    "expected_title": "503 维护或服务暂不可用",
+    "expected_phrase": "退避策略"
+  },
+  {
+    "id": "SAAS-026",
+    "kind": "answerable",
+    "category": "api",
+    "question": "为什么任务列表只返回前100条？",
+    "expected_title": "API 分页与结果数量",
+    "expected_phrase": "下一页游标"
+  },
+  {
+    "id": "SAAS-027",
+    "kind": "answerable",
+    "category": "api",
+    "question": "改变筛选条件后还能沿用原分页游标吗？",
+    "expected_title": "API 分页与结果数量",
+    "expected_phrase": "下一页游标"
+  },
+  {
+    "id": "SAAS-028",
+    "kind": "answerable",
+    "category": "api",
+    "question": "创建任务请求超时，怎么避免重试产生两条任务？",
+    "expected_title": "API 请求超时与安全重试",
+    "expected_phrase": "写入一定失败"
+  },
+  {
+    "id": "SAAS-029",
+    "kind": "answerable",
+    "category": "api",
+    "question": "超时以后能认定任务没有写入吗？",
+    "expected_title": "API 请求超时与安全重试",
+    "expected_phrase": "写入一定失败"
+  },
+  {
+    "id": "SAAS-030",
+    "kind": "answerable",
+    "category": "webhook",
+    "question": "Webhook 回调地址怎么配置并测试？",
+    "expected_title": "Webhook 回调配置",
+    "expected_phrase": "HTTPS Webhook"
+  },
+  {
+    "id": "SAAS-031",
+    "kind": "answerable",
+    "category": "webhook",
+    "question": "配置回调时可以关闭HTTPS证书校验吗？",
+    "expected_title": "Webhook 回调配置",
+    "expected_phrase": "HTTPS Webhook"
+  },
+  {
+    "id": "SAAS-032",
+    "kind": "answerable",
+    "category": "webhook",
+    "question": "Webhook 接收方怎么核验签名？",
+    "expected_title": "Webhook 签名校验",
+    "expected_phrase": "验证请求签名"
+  },
+  {
+    "id": "SAAS-033",
+    "kind": "answerable",
+    "category": "webhook",
+    "question": "只看来源IP是否可信就能跳过回调签名吗？",
+    "expected_title": "Webhook 签名校验",
+    "expected_phrase": "验证请求签名"
+  },
+  {
+    "id": "SAAS-034",
+    "kind": "answerable",
+    "category": "webhook",
+    "question": "Webhook 重试导致事件重复，怎么避免重复创建？",
+    "expected_title": "Webhook 重试与重复事件",
+    "expected_phrase": "事件 ID"
+  },
+  {
+    "id": "SAAS-035",
+    "kind": "answerable",
+    "category": "webhook",
+    "question": "相同Webhook事件可能被投递多次吗？",
+    "expected_title": "Webhook 重试与重复事件",
+    "expected_phrase": "事件 ID"
+  },
+  {
+    "id": "SAAS-036",
+    "kind": "answerable",
+    "category": "import",
+    "question": "CSV任务导入失败先查编码还是密码？",
+    "expected_title": "CSV 任务导入失败",
+    "expected_phrase": "UTF-8 编码"
+  },
+  {
+    "id": "SAAS-037",
+    "kind": "answerable",
+    "category": "import",
+    "question": "部分行导入失败可以重新导入整个文件吗？",
+    "expected_title": "CSV 任务导入失败",
+    "expected_phrase": "UTF-8 编码"
+  },
+  {
+    "id": "SAAS-038",
+    "kind": "answerable",
+    "category": "upload",
+    "question": "任务附件超过20MB怎么办？",
+    "expected_title": "附件上传失败",
+    "expected_phrase": "20 MB"
+  },
+  {
+    "id": "SAAS-039",
+    "kind": "answerable",
+    "category": "upload",
+    "question": "上传附件没超限仍失败应检查什么？",
+    "expected_title": "附件上传失败",
+    "expected_phrase": "20 MB"
+  },
+  {
+    "id": "SAAS-040",
+    "kind": "answerable",
+    "category": "search",
+    "question": "任务明明更新了搜索却没有显示，是不是没保存？",
+    "expected_title": "搜索索引更新延迟",
+    "expected_phrase": "异步更新"
+  },
+  {
+    "id": "SAAS-041",
+    "kind": "answerable",
+    "category": "search",
+    "question": "搜索结果比详情旧要重复创建任务吗？",
+    "expected_title": "搜索索引更新延迟",
+    "expected_phrase": "异步更新"
+  },
+  {
+    "id": "SAAS-042",
+    "kind": "answerable",
+    "category": "auth",
+    "question": "企业SSO登录失败应该检查回调地址吗？",
+    "expected_title": "企业单点登录失败",
+    "expected_phrase": "身份提供方配置"
+  },
+  {
+    "id": "SAAS-043",
+    "kind": "answerable",
+    "category": "auth",
+    "question": "单点登录签名错误可以关闭SSO来绕过吗？",
+    "expected_title": "企业单点登录失败",
+    "expected_phrase": "身份提供方配置"
+  },
+  {
+    "id": "SAAS-044",
+    "kind": "answerable",
+    "category": "auth",
+    "question": "换手机后无法完成MFA该走什么流程？",
+    "expected_title": "多因素认证与设备更换",
+    "expected_phrase": "正式恢复流程"
+  },
+  {
+    "id": "SAAS-045",
+    "kind": "answerable",
+    "category": "auth",
+    "question": "客服可以索取一次性验证码帮我关闭MFA吗？",
+    "expected_title": "多因素认证与设备更换",
+    "expected_phrase": "正式恢复流程"
+  },
+  {
+    "id": "SAAS-046",
+    "kind": "answerable",
+    "category": "members",
+    "question": "邀请链接失效后谁能重新邀请？",
+    "expected_title": "成员邀请与邀请失效",
+    "expected_phrase": "受邀邮箱"
+  },
+  {
+    "id": "SAAS-047",
+    "kind": "answerable",
+    "category": "members",
+    "question": "成员收不到邀请应核对邮箱与企业吗？",
+    "expected_title": "成员邀请与邀请失效",
+    "expected_phrase": "受邀邮箱"
+  },
+  {
+    "id": "SAAS-048",
+    "kind": "answerable",
+    "category": "project",
+    "question": "项目归档后是永久删除了吗？",
+    "expected_title": "项目归档与恢复",
+    "expected_phrase": "归档列表"
+  },
+  {
+    "id": "SAAS-049",
+    "kind": "answerable",
+    "category": "project",
+    "question": "找不到活跃项目时要不要查看归档列表？",
+    "expected_title": "项目归档与恢复",
+    "expected_phrase": "归档列表"
+  },
+  {
+    "id": "SAAS-050",
+    "kind": "answerable",
+    "category": "audit",
+    "question": "普通编辑者能看企业审计日志吗？",
+    "expected_title": "审计日志查询权限",
+    "expected_phrase": "企业管理员"
+  },
+  {
+    "id": "SAAS-051",
+    "kind": "answerable",
+    "category": "audit",
+    "question": "谁可以查看角色变更的审计记录？",
+    "expected_title": "审计日志查询权限",
+    "expected_phrase": "企业管理员"
+  },
+  {
+    "id": "SAAS-052",
+    "kind": "answerable",
+    "category": "privacy",
+    "question": "提交排障日志之前哪些信息必须遮盖？",
+    "expected_title": "隐私与诊断日志脱敏",
+    "expected_phrase": "访问令牌"
+  },
+  {
+    "id": "SAAS-053",
+    "kind": "answerable",
+    "category": "privacy",
+    "question": "我能把完整连接串贴进技术工单吗？",
+    "expected_title": "隐私与诊断日志脱敏",
+    "expected_phrase": "访问令牌"
+  },
+  {
+    "id": "SAAS-054",
+    "kind": "unrelated",
+    "category": "unrelated",
+    "question": "今天东京天气怎么样？",
+    "expected_title": null,
+    "expected_phrase": null
+  },
+  {
+    "id": "SAAS-055",
+    "kind": "unrelated",
+    "category": "unrelated",
+    "question": "现在美元兑日元汇率是多少？",
+    "expected_title": null,
+    "expected_phrase": null
+  },
+  {
+    "id": "SAAS-056",
+    "kind": "unrelated",
+    "category": "unrelated",
+    "question": "请帮我写一首儿童诗",
+    "expected_title": null,
+    "expected_phrase": null
+  },
+  {
+    "id": "SAAS-057",
+    "kind": "unrelated",
+    "category": "unrelated",
+    "question": "什么是光合作用？",
+    "expected_title": null,
+    "expected_phrase": null
+  },
+  {
+    "id": "SAAS-058",
+    "kind": "unrelated",
+    "category": "unrelated",
+    "question": "烤鸡翅用多少度？",
+    "expected_title": null,
+    "expected_phrase": null
+  },
+  {
+    "id": "SAAS-059",
+    "kind": "unrelated",
+    "category": "unrelated",
+    "question": "世界杯冠军是谁？",
+    "expected_title": null,
+    "expected_phrase": null
+  },
+  {
+    "id": "SAAS-060",
+    "kind": "missing_fact",
+    "category": "missing_fact",
+    "question": "星河协作平台企业版一年多少钱？",
+    "expected_title": null,
+    "expected_phrase": null
+  },
+  {
+    "id": "SAAS-061",
+    "kind": "missing_fact",
+    "category": "missing_fact",
+    "question": "导出文件在云端保留几天？",
+    "expected_title": null,
+    "expected_phrase": null
+  },
+  {
+    "id": "SAAS-062",
+    "kind": "missing_fact",
+    "category": "missing_fact",
+    "question": "平台最多支持多少个项目成员？",
+    "expected_title": null,
+    "expected_phrase": null
+  },
+  {
+    "id": "SAAS-063",
+    "kind": "missing_fact",
+    "category": "missing_fact",
+    "question": "Webhook失败后精确隔几分钟重试？",
+    "expected_title": null,
+    "expected_phrase": null
+  },
+  {
+    "id": "SAAS-064",
+    "kind": "missing_fact",
+    "category": "missing_fact",
+    "question": "云端数据中心具体在哪座城市？",
+    "expected_title": null,
+    "expected_phrase": null
+  },
+  {
+    "id": "SAAS-065",
+    "kind": "missing_fact",
+    "category": "missing_fact",
+    "question": "目前生产环境是否正在维护？",
+    "expected_title": null,
+    "expected_phrase": null
+  }
+]

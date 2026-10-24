@@ -1,0 +1,1739 @@
+{
+  "case_count": 65,
+  "positive": {
+    "count": 53,
+    "hit_at_1": 0.9811,
+    "hit_at_2": 0.9811,
+    "hit_at_3": 1.0,
+    "mrr_at_3": 0.9874,
+    "categories": {
+      "api": {
+        "total": 4,
+        "hit1": 4
+      },
+      "api_errors": {
+        "total": 12,
+        "hit1": 12
+      },
+      "audit": {
+        "total": 2,
+        "hit1": 2
+      },
+      "auth": {
+        "total": 7,
+        "hit1": 7
+      },
+      "deployment": {
+        "total": 2,
+        "hit1": 2
+      },
+      "export": {
+        "total": 1,
+        "hit1": 1
+      },
+      "import": {
+        "total": 2,
+        "hit1": 2
+      },
+      "members": {
+        "total": 2,
+        "hit1": 2
+      },
+      "privacy": {
+        "total": 2,
+        "hit1": 2
+      },
+      "product": {
+        "total": 1,
+        "hit1": 1
+      },
+      "project": {
+        "total": 2,
+        "hit1": 2
+      },
+      "rate_limit": {
+        "total": 1,
+        "hit1": 1
+      },
+      "search": {
+        "total": 2,
+        "hit1": 2
+      },
+      "ticket": {
+        "total": 1,
+        "hit1": 1
+      },
+      "triage": {
+        "total": 1,
+        "hit1": 1
+      },
+      "unknown_policy": {
+        "total": 1,
+        "hit1": 1
+      },
+      "upload": {
+        "total": 2,
+        "hit1": 2
+      },
+      "version": {
+        "total": 2,
+        "hit1": 2
+      },
+      "webhook": {
+        "total": 6,
+        "hit1": 5
+      }
+    }
+  },
+  "unrelated": {
+    "count": 6,
+    "no_hit_rate": 1.0
+  },
+  "missing_fact": {
+    "count": 6,
+    "manual_review_required": true
+  },
+  "latency_ms": {
+    "p50": 15.02,
+    "p95": 18.76
+  },
+  "details": [
+    {
+      "id": "SAAS-001",
+      "kind": "answerable",
+      "category": "product",
+      "question": "星河协作平台主要用来做什么？",
+      "expected_title": "产品定义与适用范围",
+      "retrieved": [
+        {
+          "title": "产品定义与适用范围",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "1679d05cbf44c151",
+          "excerpt": "星河协作平台是本演示项目虚构的企业项目管理软件，支持项目、成员、角色和任务管理。提供云端版和私有部署版。技术支持适用于账号登录、项目权限、部署配置、版本兼容和数据导出。本文是演示知识库，不代表系统已实现所有功能；实时运行状态、用户权限和工单结果必须通过相应工具核实。"
+        },
+        {
+          "title": "成员角色与权限",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "71155e9e7ffc359e",
+          "excerpt": "星河协作平台的项目角色分为管理员、编辑者和访客。管理员可以管理项目成员及角色；编辑者可以创建和修改任务；访客只能查看被授权的项目内容。企业成员身份不等于自动拥有所有项目权限。需要修改角色时，应联系该项目管理员；助手不能仅根据用户描述认定权限已经生效。"
+        },
+        {
+          "title": "私有部署前的准备",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "9460a41e445a8712",
+          "excerpt": "星河协作平台私有部署前，需要确认所用产品版本，并使用该版本随附的部署配置和依赖清单。数据库连接、应用对外地址及文件存储位置应按部署文档填写。先备份已有数据，再验证数据库连通性和服务健康状态。当前知识库未收录具体安装包、镜像地址和启动命令；遇到此类问题应说明资料不足，不能编造下载链接或执行命令。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-002",
+      "kind": "answerable",
+      "category": "triage",
+      "question": "报技术故障前需要准备哪些信息？",
+      "expected_title": "问题排查前需要的信息",
+      "retrieved": [
+        {
+          "title": "问题排查前需要的信息",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "1e293d0c2fa1af66",
+          "excerpt": "排查技术问题时，先确认产品版本、云端版或私有部署版、具体操作、错误码和发生时间。如果已有报错截图或请求 ID，可补充脱敏后的内容。优先根据已提供的信息查找排查步骤，只追问影响判断的缺失信息。不得索要密码、完整访问令牌、API 密钥或完整数据库连接凭据。"
+        },
+        {
+          "title": "技术支持工单所需信息",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "841d266b735a60e8",
+          "excerpt": "文档排查无法解决问题或用户明确要求人工处理时，可以建议提交技术支持工单。建议收集问题标题、产品版本、部署方式、问题描述、复现步骤、错误码和影响范围。创建前展示拟提交内容并等待用户明确确认；只有创建工具返回成功后才能告知工单编号。此章节描述目标业务规则，不能作为工单已经创建的证据。"
+        },
+        {
+          "title": "隐私与诊断日志脱敏",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "ad39fffe513ab1a0",
+          "excerpt": "排查错误时可以收集请求 ID、状态码、产品版本、脱敏日志片段和复现步骤。提交日志前应遮盖密码、访问令牌、签名密钥、完整连接串和个人信息。当前演示验证码只用于本地合成数据；任何真实生产凭据都不应进入聊天或技术工单。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-003",
+      "kind": "answerable",
+      "category": "auth",
+      "question": "打开项目提示403，应该先核对什么？",
+      "expected_title": "403 无权限访问项目",
+      "retrieved": [
+        {
+          "title": "403 无权限访问项目",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "6c05bc75622134ba",
+          "excerpt": "访问项目出现 403 或“无权限”时，先确认当前登录账号和所属企业，再请项目管理员检查账号是否加入该项目、角色是否允许当前操作。访客仅能查看，编辑操作需要编辑者或管理员权限。权限调整后退出并重新登录再试。仍然出现 403 时，记录项目标识、发生时间和请求 ID，提交技术支持；不要通过公开项目或关闭鉴权来绕过权限检查。"
+        },
+        {
+          "title": "404 项目或任务不存在",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "8b7a484ed49d647c",
+          "excerpt": "读取项目或任务返回 404 时，先确认资源 ID、所属企业和环境是否正确，再检查资源是否已被删除或归档。为避免暴露其他企业资源，未授权访问也可能统一显示不可用；单凭 404 不能断定资源不存在。不要向未经验证的用户披露项目名称或任务内容。"
+        },
+        {
+          "title": "429 请求过多与配额",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "574eab5cc60f0852",
+          "excerpt": "接口出现 429 或 RATE_LIMIT_EXCEEDED 时，先确认请求是否超过应用在当前限流窗口的额度；降低请求频率，并在下一个限流窗口再试。若持续发生，记录应用标识、请求 ID 和发生时间交给技术支持。具体应用当前配额及某次调用结果必须在验证演示应用身份后调用业务工具查询；静态文档不能证明实时配额、限流窗口的实际结束时间或故障已恢复。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-004",
+      "kind": "answerable",
+      "category": "auth",
+      "question": "接口提示401登录已失效，如何处理？",
+      "expected_title": "401 登录失效与令牌过期",
+      "retrieved": [
+        {
+          "title": "401 登录失效与令牌过期",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c1dab4f0c08f590c",
+          "excerpt": "接口返回 401 或“登录已失效”时，先重新登录；API 调用者应确认访问令牌是否过期、是否属于当前环境以及认证请求头是否正确。使用管理员提供的正式渠道更新令牌，不要把完整令牌粘贴到聊天或工单中。更新后仍出现 401 时，提供产品版本、接口路径、发生时间和脱敏后的错误信息。"
+        },
+        {
+          "title": "400 请求参数错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "8f896256b1070bac",
+          "excerpt": "接口返回 400 或 INVALID_ARGUMENT 时，检查请求体是否为合法 JSON、必填字段是否缺失、字段类型是否符合当前版本接口文档。先用脱敏后的最小请求复现，并记录接口路径、版本与请求 ID。不要把 400 当作登录过期；如果返回 401，应按登录失效章节排查。"
+        },
+        {
+          "title": "企业单点登录失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "d1c445df69697772",
+          "excerpt": "启用 SSO 的企业登录失败时，先确认企业登录入口、身份提供方配置、回调地址及用户是否被分配到该应用。若出现签名或时间相关错误，由管理员核对证书与时钟。不要建议用户关闭 SSO 或共享管理员账号；收集脱敏错误码后升级处理。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-005",
+      "kind": "answerable",
+      "category": "auth",
+      "question": "访客可以修改任务吗？",
+      "expected_title": "成员角色与权限",
+      "retrieved": [
+        {
+          "title": "成员角色与权限",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "71155e9e7ffc359e",
+          "excerpt": "星河协作平台的项目角色分为管理员、编辑者和访客。管理员可以管理项目成员及角色；编辑者可以创建和修改任务；访客只能查看被授权的项目内容。企业成员身份不等于自动拥有所有项目权限。需要修改角色时，应联系该项目管理员；助手不能仅根据用户描述认定权限已经生效。"
+        },
+        {
+          "title": "搜索索引更新延迟",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "761ac51f8b7f4a3a",
+          "excerpt": "任务修改后搜索结果短时间未更新时，先打开任务详情核对源记录是否已保存。演示平台的搜索索引异步更新，搜索结果可能短暂落后于详情；不要重复创建任务。长时间不一致时提供任务 ID、修改时间和搜索条件，由技术支持排查索引状态。"
+        },
+        {
+          "title": "409 并发更新冲突",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "89039678a9618e58",
+          "excerpt": "同时修改同一任务返回 409 或 VERSION_CONFLICT 时，重新读取最新任务版本，核对他人的变更，再基于新版本提交。不要自动覆盖其他成员编辑的内容。若多次冲突，提供任务 ID、发生时间和脱敏请求 ID 排查。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-006",
+      "kind": "answerable",
+      "category": "deployment",
+      "question": "私有部署前要做哪些准备？",
+      "expected_title": "私有部署前的准备",
+      "retrieved": [
+        {
+          "title": "私有部署前的准备",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "9460a41e445a8712",
+          "excerpt": "星河协作平台私有部署前，需要确认所用产品版本，并使用该版本随附的部署配置和依赖清单。数据库连接、应用对外地址及文件存储位置应按部署文档填写。先备份已有数据，再验证数据库连通性和服务健康状态。当前知识库未收录具体安装包、镜像地址和启动命令；遇到此类问题应说明资料不足，不能编造下载链接或执行命令。"
+        },
+        {
+          "title": "服务启动失败与数据库连接",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "fd624a869bc67f22",
+          "excerpt": "私有部署后服务启动失败，且日志出现数据库连接错误时，检查数据库服务是否运行、应用到数据库的网络是否可达、配置的主机和端口是否正确、数据库账号是否具有所需权限。提供日志时遮盖密码和连接字符串中的敏感字段。不要把删除数据库或清空数据作为常规排查方法；仍然失败时收集产品版本、启动时间和脱敏日志。"
+        },
+        {
+          "title": "问题排查前需要的信息",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "1e293d0c2fa1af66",
+          "excerpt": "排查技术问题时，先确认产品版本、云端版或私有部署版、具体操作、错误码和发生时间。如果已有报错截图或请求 ID，可补充脱敏后的内容。优先根据已提供的信息查找排查步骤，只追问影响判断的缺失信息。不得索要密码、完整访问令牌、API 密钥或完整数据库连接凭据。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-007",
+      "kind": "answerable",
+      "category": "deployment",
+      "question": "私有部署启动时提示数据库连不上怎么办？",
+      "expected_title": "服务启动失败与数据库连接",
+      "retrieved": [
+        {
+          "title": "服务启动失败与数据库连接",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "fd624a869bc67f22",
+          "excerpt": "私有部署后服务启动失败，且日志出现数据库连接错误时，检查数据库服务是否运行、应用到数据库的网络是否可达、配置的主机和端口是否正确、数据库账号是否具有所需权限。提供日志时遮盖密码和连接字符串中的敏感字段。不要把删除数据库或清空数据作为常规排查方法；仍然失败时收集产品版本、启动时间和脱敏日志。"
+        },
+        {
+          "title": "私有部署前的准备",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "9460a41e445a8712",
+          "excerpt": "星河协作平台私有部署前，需要确认所用产品版本，并使用该版本随附的部署配置和依赖清单。数据库连接、应用对外地址及文件存储位置应按部署文档填写。先备份已有数据，再验证数据库连通性和服务健康状态。当前知识库未收录具体安装包、镜像地址和启动命令；遇到此类问题应说明资料不足，不能编造下载链接或执行命令。"
+        },
+        {
+          "title": "问题排查前需要的信息",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "1e293d0c2fa1af66",
+          "excerpt": "排查技术问题时，先确认产品版本、云端版或私有部署版、具体操作、错误码和发生时间。如果已有报错截图或请求 ID，可补充脱敏后的内容。优先根据已提供的信息查找排查步骤，只追问影响判断的缺失信息。不得索要密码、完整访问令牌、API 密钥或完整数据库连接凭据。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-008",
+      "kind": "answerable",
+      "category": "version",
+      "question": "1.0版本能批量导出吗？",
+      "expected_title": "版本兼容与批量导出",
+      "retrieved": [
+        {
+          "title": "版本兼容与批量导出",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "88b4cc863fa704e0",
+          "excerpt": "本演示产品中，批量导出功能从星河协作平台 2.0 版本开始提供，1.0 版本不支持批量导出。2.0 的 API 客户端应配套使用 2.0 的接口文档；不能直接假设 1.0 的请求参数仍然有效。用户询问功能不可用时，应先确认产品版本与角色，再判断是否属于版本不支持或权限不足。"
+        },
+        {
+          "title": "导出失败与导出数量限制",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "49c17f76d52cce94",
+          "excerpt": "星河协作平台 2.0 单次最多导出 5000 条任务记录，超过时应按项目、日期或状态筛选后分批导出。访客无导出权限；管理员和编辑者可导出其有权访问的项目数据。数据量未超限且权限正确但仍导出失败时，应提供筛选条件、记录数量、发生时间和请求 ID。助手不得宣称已生成或下载文件，除非工具确认成功。"
+        },
+        {
+          "title": "CSV 任务导入失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "da1f3cbbffda9b98",
+          "excerpt": "导入任务 CSV 失败时，核对 UTF-8 编码、列名、必填字段和日期格式，并先用少量脱敏数据复现。若部分行失败，保存失败行及错误原因后修正再导入，避免把整份文件重复导入。当前知识库没有模板下载地址，助手不能编造下载链接。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-009",
+      "kind": "answerable",
+      "category": "export",
+      "question": "单次导出超过5000条任务怎么办？",
+      "expected_title": "导出失败与导出数量限制",
+      "retrieved": [
+        {
+          "title": "导出失败与导出数量限制",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "49c17f76d52cce94",
+          "excerpt": "星河协作平台 2.0 单次最多导出 5000 条任务记录，超过时应按项目、日期或状态筛选后分批导出。访客无导出权限；管理员和编辑者可导出其有权访问的项目数据。数据量未超限且权限正确但仍导出失败时，应提供筛选条件、记录数量、发生时间和请求 ID。助手不得宣称已生成或下载文件，除非工具确认成功。"
+        },
+        {
+          "title": "API 分页与结果数量",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "2428bb9eac146369",
+          "excerpt": "星河协作平台演示版的任务列表接口每页最多返回 100 条。需要更多结果时，应使用响应中的下一页游标继续读取，不要把第一页当成全部数据。分页游标仅对当前查询条件有效；改变项目或筛选条件后，应重新从第一页开始。"
+        },
+        {
+          "title": "附件上传失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "7c543a30bccb67d7",
+          "excerpt": "演示版单个任务附件不能超过 20 MB；超限时应压缩或拆分文件。若文件未超限，检查上传权限、网络连接和文件格式，并记录错误码与请求 ID。当前知识库不保证所有文件格式都支持；未知格式应先核对产品版本文档。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-010",
+      "kind": "answerable",
+      "category": "version",
+      "question": "系统升级之前为什么要先在测试环境检查？",
+      "expected_title": "升级前检查与异常处理",
+      "retrieved": [
+        {
+          "title": "升级前检查与异常处理",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "ac9a79b67b0f3a7f",
+          "excerpt": "星河协作平台升级前，应备份数据库和配置，阅读目标版本的变更说明，并在测试环境验证关键操作。当前知识库没有完整的升级兼容矩阵及数据库回滚步骤，不能保证任意版本可直接升级或降级。升级后发生异常时，应记录升级前后版本、影响范围和脱敏日志，交由技术支持判断恢复方案。"
+        },
+        {
+          "title": "Webhook 回调配置",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "83bb456bf199a8af",
+          "excerpt": "演示版支持为任务变更配置 HTTPS Webhook 回调。回调地址需由项目管理员设置，并能被平台服务访问。配置后应发送测试事件核对响应；回调失败时检查地址、证书、返回状态码和网络放行规则。不要要求用户关闭 HTTPS 证书校验。"
+        },
+        {
+          "title": "多因素认证与设备更换",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "01efa3d6f5c6b24c",
+          "excerpt": "启用多因素认证后更换设备的用户，应按企业配置的正式恢复流程处理，并完成身份核验。技术支持不能通过聊天关闭 MFA，也不得索要一次性验证码或恢复代码。管理员修改认证设置后，需提醒用户重新登录验证。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-011",
+      "kind": "answerable",
+      "category": "ticket",
+      "question": "创建技术支持工单前，需要我确认吗？",
+      "expected_title": "技术支持工单所需信息",
+      "retrieved": [
+        {
+          "title": "技术支持工单所需信息",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "841d266b735a60e8",
+          "excerpt": "文档排查无法解决问题或用户明确要求人工处理时，可以建议提交技术支持工单。建议收集问题标题、产品版本、部署方式、问题描述、复现步骤、错误码和影响范围。创建前展示拟提交内容并等待用户明确确认；只有创建工具返回成功后才能告知工单编号。此章节描述目标业务规则，不能作为工单已经创建的证据。"
+        },
+        {
+          "title": "429 请求过多与配额",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "574eab5cc60f0852",
+          "excerpt": "接口出现 429 或 RATE_LIMIT_EXCEEDED 时，先确认请求是否超过应用在当前限流窗口的额度；降低请求频率，并在下一个限流窗口再试。若持续发生，记录应用标识、请求 ID 和发生时间交给技术支持。具体应用当前配额及某次调用结果必须在验证演示应用身份后调用业务工具查询；静态文档不能证明实时配额、限流窗口的实际结束时间或故障已恢复。"
+        },
+        {
+          "title": "知识库未覆盖的问题",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c762f9e6a42ccc88",
+          "excerpt": "当前知识库未收录收费报价、合同条款、客户的实时系统状态和具体修复完成时间。遇到未覆盖的问题，应说明现有资料不足，并建议联系对应负责人或技术支持。不能根据其他产品的惯例编造本产品规则，也不能把检索到的相似章节作为确定结论。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-012",
+      "kind": "answerable",
+      "category": "unknown_policy",
+      "question": "能从知识库直接知道合同报价吗？",
+      "expected_title": "知识库未覆盖的问题",
+      "retrieved": [
+        {
+          "title": "知识库未覆盖的问题",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c762f9e6a42ccc88",
+          "excerpt": "当前知识库未收录收费报价、合同条款、客户的实时系统状态和具体修复完成时间。遇到未覆盖的问题，应说明现有资料不足，并建议联系对应负责人或技术支持。不能根据其他产品的惯例编造本产品规则，也不能把检索到的相似章节作为确定结论。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-013",
+      "kind": "answerable",
+      "category": "rate_limit",
+      "question": "接口出现429怎么排查？",
+      "expected_title": "429 请求过多与配额",
+      "retrieved": [
+        {
+          "title": "429 请求过多与配额",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "574eab5cc60f0852",
+          "excerpt": "接口出现 429 或 RATE_LIMIT_EXCEEDED 时，先确认请求是否超过应用在当前限流窗口的额度；降低请求频率，并在下一个限流窗口再试。若持续发生，记录应用标识、请求 ID 和发生时间交给技术支持。具体应用当前配额及某次调用结果必须在验证演示应用身份后调用业务工具查询；静态文档不能证明实时配额、限流窗口的实际结束时间或故障已恢复。"
+        },
+        {
+          "title": "400 请求参数错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "8f896256b1070bac",
+          "excerpt": "接口返回 400 或 INVALID_ARGUMENT 时，检查请求体是否为合法 JSON、必填字段是否缺失、字段类型是否符合当前版本接口文档。先用脱敏后的最小请求复现，并记录接口路径、版本与请求 ID。不要把 400 当作登录过期；如果返回 401，应按登录失效章节排查。"
+        },
+        {
+          "title": "问题排查前需要的信息",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "1e293d0c2fa1af66",
+          "excerpt": "排查技术问题时，先确认产品版本、云端版或私有部署版、具体操作、错误码和发生时间。如果已有报错截图或请求 ID，可补充脱敏后的内容。优先根据已提供的信息查找排查步骤，只追问影响判断的缺失信息。不得索要密码、完整访问令牌、API 密钥或完整数据库连接凭据。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-014",
+      "kind": "answerable",
+      "category": "api_errors",
+      "question": "接口返回400 INVALID_ARGUMENT 是什么问题？",
+      "expected_title": "400 请求参数错误",
+      "retrieved": [
+        {
+          "title": "400 请求参数错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "8f896256b1070bac",
+          "excerpt": "接口返回 400 或 INVALID_ARGUMENT 时，检查请求体是否为合法 JSON、必填字段是否缺失、字段类型是否符合当前版本接口文档。先用脱敏后的最小请求复现，并记录接口路径、版本与请求 ID。不要把 400 当作登录过期；如果返回 401，应按登录失效章节排查。"
+        },
+        {
+          "title": "500 服务内部错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "a661dd04a645a628",
+          "excerpt": "接口返回 500 时，先保留请求 ID、发生时间、环境和复现步骤。可以在确认操作可安全重试后再次尝试；对于创建或支付类写操作，须先查询结果并使用幂等标识，避免重复写入。静态文档不能证明服务已恢复，不能承诺确切修复时间。"
+        },
+        {
+          "title": "401 登录失效与令牌过期",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c1dab4f0c08f590c",
+          "excerpt": "接口返回 401 或“登录已失效”时，先重新登录；API 调用者应确认访问令牌是否过期、是否属于当前环境以及认证请求头是否正确。使用管理员提供的正式渠道更新令牌，不要把完整令牌粘贴到聊天或工单中。更新后仍出现 401 时，提供产品版本、接口路径、发生时间和脱敏后的错误信息。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-015",
+      "kind": "answerable",
+      "category": "api_errors",
+      "question": "传参格式错了请求被拒，该检查JSON还是登录状态？",
+      "expected_title": "400 请求参数错误",
+      "retrieved": [
+        {
+          "title": "400 请求参数错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "8f896256b1070bac",
+          "excerpt": "接口返回 400 或 INVALID_ARGUMENT 时，检查请求体是否为合法 JSON、必填字段是否缺失、字段类型是否符合当前版本接口文档。先用脱敏后的最小请求复现，并记录接口路径、版本与请求 ID。不要把 400 当作登录过期；如果返回 401，应按登录失效章节排查。"
+        },
+        {
+          "title": "隐私与诊断日志脱敏",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "ad39fffe513ab1a0",
+          "excerpt": "排查错误时可以收集请求 ID、状态码、产品版本、脱敏日志片段和复现步骤。提交日志前应遮盖密码、访问令牌、签名密钥、完整连接串和个人信息。当前演示验证码只用于本地合成数据；任何真实生产凭据都不应进入聊天或技术工单。"
+        },
+        {
+          "title": "Webhook 签名校验",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c463715c0632f8ba",
+          "excerpt": "收到 Webhook 时，接收方应使用配置的签名密钥验证请求签名，并检查时间戳。验证失败须拒绝处理，不应因为来源 IP 看似可信就跳过校验。签名密钥只能通过正式配置渠道更换，聊天与工单中不得提交完整密钥。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-016",
+      "kind": "answerable",
+      "category": "api_errors",
+      "question": "任务接口返回404就说明任务被删除了吗？",
+      "expected_title": "404 项目或任务不存在",
+      "retrieved": [
+        {
+          "title": "404 项目或任务不存在",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "8b7a484ed49d647c",
+          "excerpt": "读取项目或任务返回 404 时，先确认资源 ID、所属企业和环境是否正确，再检查资源是否已被删除或归档。为避免暴露其他企业资源，未授权访问也可能统一显示不可用；单凭 404 不能断定资源不存在。不要向未经验证的用户披露项目名称或任务内容。"
+        },
+        {
+          "title": "500 服务内部错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "a661dd04a645a628",
+          "excerpt": "接口返回 500 时，先保留请求 ID、发生时间、环境和复现步骤。可以在确认操作可安全重试后再次尝试；对于创建或支付类写操作，须先查询结果并使用幂等标识，避免重复写入。静态文档不能证明服务已恢复，不能承诺确切修复时间。"
+        },
+        {
+          "title": "401 登录失效与令牌过期",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c1dab4f0c08f590c",
+          "excerpt": "接口返回 401 或“登录已失效”时，先重新登录；API 调用者应确认访问令牌是否过期、是否属于当前环境以及认证请求头是否正确。使用管理员提供的正式渠道更新令牌，不要把完整令牌粘贴到聊天或工单中。更新后仍出现 401 时，提供产品版本、接口路径、发生时间和脱敏后的错误信息。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-017",
+      "kind": "answerable",
+      "category": "api_errors",
+      "question": "项目ID明明存在却返回404，该从什么方面排查？",
+      "expected_title": "404 项目或任务不存在",
+      "retrieved": [
+        {
+          "title": "404 项目或任务不存在",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "8b7a484ed49d647c",
+          "excerpt": "读取项目或任务返回 404 时，先确认资源 ID、所属企业和环境是否正确，再检查资源是否已被删除或归档。为避免暴露其他企业资源，未授权访问也可能统一显示不可用；单凭 404 不能断定资源不存在。不要向未经验证的用户披露项目名称或任务内容。"
+        },
+        {
+          "title": "403 无权限访问项目",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "6c05bc75622134ba",
+          "excerpt": "访问项目出现 403 或“无权限”时，先确认当前登录账号和所属企业，再请项目管理员检查账号是否加入该项目、角色是否允许当前操作。访客仅能查看，编辑操作需要编辑者或管理员权限。权限调整后退出并重新登录再试。仍然出现 403 时，记录项目标识、发生时间和请求 ID，提交技术支持；不要通过公开项目或关闭鉴权来绕过权限检查。"
+        },
+        {
+          "title": "400 请求参数错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "8f896256b1070bac",
+          "excerpt": "接口返回 400 或 INVALID_ARGUMENT 时，检查请求体是否为合法 JSON、必填字段是否缺失、字段类型是否符合当前版本接口文档。先用脱敏后的最小请求复现，并记录接口路径、版本与请求 ID。不要把 400 当作登录过期；如果返回 401，应按登录失效章节排查。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-018",
+      "kind": "answerable",
+      "category": "api_errors",
+      "question": "两个成员同时改任务出现409怎么办？",
+      "expected_title": "409 并发更新冲突",
+      "retrieved": [
+        {
+          "title": "409 并发更新冲突",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "89039678a9618e58",
+          "excerpt": "同时修改同一任务返回 409 或 VERSION_CONFLICT 时，重新读取最新任务版本，核对他人的变更，再基于新版本提交。不要自动覆盖其他成员编辑的内容。若多次冲突，提供任务 ID、发生时间和脱敏请求 ID 排查。"
+        },
+        {
+          "title": "404 项目或任务不存在",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "8b7a484ed49d647c",
+          "excerpt": "读取项目或任务返回 404 时，先确认资源 ID、所属企业和环境是否正确，再检查资源是否已被删除或归档。为避免暴露其他企业资源，未授权访问也可能统一显示不可用；单凭 404 不能断定资源不存在。不要向未经验证的用户披露项目名称或任务内容。"
+        },
+        {
+          "title": "429 请求过多与配额",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "574eab5cc60f0852",
+          "excerpt": "接口出现 429 或 RATE_LIMIT_EXCEEDED 时，先确认请求是否超过应用在当前限流窗口的额度；降低请求频率，并在下一个限流窗口再试。若持续发生，记录应用标识、请求 ID 和发生时间交给技术支持。具体应用当前配额及某次调用结果必须在验证演示应用身份后调用业务工具查询；静态文档不能证明实时配额、限流窗口的实际结束时间或故障已恢复。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-019",
+      "kind": "answerable",
+      "category": "api_errors",
+      "question": "VERSION_CONFLICT 能直接覆盖他人的修改吗？",
+      "expected_title": "409 并发更新冲突",
+      "retrieved": [
+        {
+          "title": "409 并发更新冲突",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "89039678a9618e58",
+          "excerpt": "同时修改同一任务返回 409 或 VERSION_CONFLICT 时，重新读取最新任务版本，核对他人的变更，再基于新版本提交。不要自动覆盖其他成员编辑的内容。若多次冲突，提供任务 ID、发生时间和脱敏请求 ID 排查。"
+        },
+        {
+          "title": "多因素认证与设备更换",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "01efa3d6f5c6b24c",
+          "excerpt": "启用多因素认证后更换设备的用户，应按企业配置的正式恢复流程处理，并完成身份核验。技术支持不能通过聊天关闭 MFA，也不得索要一次性验证码或恢复代码。管理员修改认证设置后，需提醒用户重新登录验证。"
+        },
+        {
+          "title": "知识库未覆盖的问题",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c762f9e6a42ccc88",
+          "excerpt": "当前知识库未收录收费报价、合同条款、客户的实时系统状态和具体修复完成时间。遇到未覆盖的问题，应说明现有资料不足，并建议联系对应负责人或技术支持。不能根据其他产品的惯例编造本产品规则，也不能把检索到的相似章节作为确定结论。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-020",
+      "kind": "answerable",
+      "category": "api_errors",
+      "question": "创建任务接口报500后可以直接重试吗？",
+      "expected_title": "500 服务内部错误",
+      "retrieved": [
+        {
+          "title": "500 服务内部错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "a661dd04a645a628",
+          "excerpt": "接口返回 500 时，先保留请求 ID、发生时间、环境和复现步骤。可以在确认操作可安全重试后再次尝试；对于创建或支付类写操作，须先查询结果并使用幂等标识，避免重复写入。静态文档不能证明服务已恢复，不能承诺确切修复时间。"
+        },
+        {
+          "title": "API 请求超时与安全重试",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "85ec8be6c1aa9f1b",
+          "excerpt": "接口请求超时不等于写入一定失败。读操作可在合理退避后重试；创建任务等写操作要先查询结果并复用同一提交标识，避免产生重复任务。持续超时时记录接口路径、发生时间、请求 ID 和网络环境，不要把提高超时值当作唯一修复手段。"
+        },
+        {
+          "title": "搜索索引更新延迟",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "761ac51f8b7f4a3a",
+          "excerpt": "任务修改后搜索结果短时间未更新时，先打开任务详情核对源记录是否已保存。演示平台的搜索索引异步更新，搜索结果可能短暂落后于详情；不要重复创建任务。长时间不一致时提供任务 ID、修改时间和搜索条件，由技术支持排查索引状态。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-021",
+      "kind": "answerable",
+      "category": "api_errors",
+      "question": "服务器内部错误需要保留哪些线索并避免重复写入？",
+      "expected_title": "500 服务内部错误",
+      "retrieved": [
+        {
+          "title": "500 服务内部错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "a661dd04a645a628",
+          "excerpt": "接口返回 500 时，先保留请求 ID、发生时间、环境和复现步骤。可以在确认操作可安全重试后再次尝试；对于创建或支付类写操作，须先查询结果并使用幂等标识，避免重复写入。静态文档不能证明服务已恢复，不能承诺确切修复时间。"
+        },
+        {
+          "title": "CSV 任务导入失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "da1f3cbbffda9b98",
+          "excerpt": "导入任务 CSV 失败时，核对 UTF-8 编码、列名、必填字段和日期格式，并先用少量脱敏数据复现。若部分行失败，保存失败行及错误原因后修正再导入，避免把整份文件重复导入。当前知识库没有模板下载地址，助手不能编造下载链接。"
+        },
+        {
+          "title": "API 请求超时与安全重试",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "85ec8be6c1aa9f1b",
+          "excerpt": "接口请求超时不等于写入一定失败。读操作可在合理退避后重试；创建任务等写操作要先查询结果并复用同一提交标识，避免产生重复任务。持续超时时记录接口路径、发生时间、请求 ID 和网络环境，不要把提高超时值当作唯一修复手段。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-022",
+      "kind": "answerable",
+      "category": "api_errors",
+      "question": "网关提示502应该查哪里？",
+      "expected_title": "502 网关或上游服务异常",
+      "retrieved": [
+        {
+          "title": "502 网关或上游服务异常",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "47fe0533ab6b1334",
+          "excerpt": "出现 502 时，检查应用网关到上游服务的连通性和上游健康状态，记录网关请求 ID 与时间。私有部署应查看反向代理和应用服务日志；云端用户可通过技术工单提供脱敏证据。不能仅凭 502 判断数据库故障。"
+        },
+        {
+          "title": "503 维护或服务暂不可用",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "d1b3033ad500e26e",
+          "excerpt": "出现 503 时，按提示确认是否处于计划维护窗口，并记录发生时间和请求 ID；也可能是服务负载或依赖异常。避免高频自动重试，使用退避策略并联系技术支持核实。不能凭静态知识库宣布当前正在维护。"
+        },
+        {
+          "title": "404 项目或任务不存在",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "8b7a484ed49d647c",
+          "excerpt": "读取项目或任务返回 404 时，先确认资源 ID、所属企业和环境是否正确，再检查资源是否已被删除或归档。为避免暴露其他企业资源，未授权访问也可能统一显示不可用；单凭 404 不能断定资源不存在。不要向未经验证的用户披露项目名称或任务内容。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-023",
+      "kind": "answerable",
+      "category": "api_errors",
+      "question": "私有部署遇到上游502，需要看代理日志还是先删库？",
+      "expected_title": "502 网关或上游服务异常",
+      "retrieved": [
+        {
+          "title": "502 网关或上游服务异常",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "47fe0533ab6b1334",
+          "excerpt": "出现 502 时，检查应用网关到上游服务的连通性和上游健康状态，记录网关请求 ID 与时间。私有部署应查看反向代理和应用服务日志；云端用户可通过技术工单提供脱敏证据。不能仅凭 502 判断数据库故障。"
+        },
+        {
+          "title": "服务启动失败与数据库连接",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "fd624a869bc67f22",
+          "excerpt": "私有部署后服务启动失败，且日志出现数据库连接错误时，检查数据库服务是否运行、应用到数据库的网络是否可达、配置的主机和端口是否正确、数据库账号是否具有所需权限。提供日志时遮盖密码和连接字符串中的敏感字段。不要把删除数据库或清空数据作为常规排查方法；仍然失败时收集产品版本、启动时间和脱敏日志。"
+        },
+        {
+          "title": "私有部署前的准备",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "9460a41e445a8712",
+          "excerpt": "星河协作平台私有部署前，需要确认所用产品版本，并使用该版本随附的部署配置和依赖清单。数据库连接、应用对外地址及文件存储位置应按部署文档填写。先备份已有数据，再验证数据库连通性和服务健康状态。当前知识库未收录具体安装包、镜像地址和启动命令；遇到此类问题应说明资料不足，不能编造下载链接或执行命令。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-024",
+      "kind": "answerable",
+      "category": "api_errors",
+      "question": "接口503时可以高频无限重试吗？",
+      "expected_title": "503 维护或服务暂不可用",
+      "retrieved": [
+        {
+          "title": "503 维护或服务暂不可用",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "d1b3033ad500e26e",
+          "excerpt": "出现 503 时，按提示确认是否处于计划维护窗口，并记录发生时间和请求 ID；也可能是服务负载或依赖异常。避免高频自动重试，使用退避策略并联系技术支持核实。不能凭静态知识库宣布当前正在维护。"
+        },
+        {
+          "title": "500 服务内部错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "a661dd04a645a628",
+          "excerpt": "接口返回 500 时，先保留请求 ID、发生时间、环境和复现步骤。可以在确认操作可安全重试后再次尝试；对于创建或支付类写操作，须先查询结果并使用幂等标识，避免重复写入。静态文档不能证明服务已恢复，不能承诺确切修复时间。"
+        },
+        {
+          "title": "429 请求过多与配额",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "574eab5cc60f0852",
+          "excerpt": "接口出现 429 或 RATE_LIMIT_EXCEEDED 时，先确认请求是否超过应用在当前限流窗口的额度；降低请求频率，并在下一个限流窗口再试。若持续发生，记录应用标识、请求 ID 和发生时间交给技术支持。具体应用当前配额及某次调用结果必须在验证演示应用身份后调用业务工具查询；静态文档不能证明实时配额、限流窗口的实际结束时间或故障已恢复。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-025",
+      "kind": "answerable",
+      "category": "api_errors",
+      "question": "服务暂不可用是否就一定在计划维护？",
+      "expected_title": "503 维护或服务暂不可用",
+      "retrieved": [
+        {
+          "title": "503 维护或服务暂不可用",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "d1b3033ad500e26e",
+          "excerpt": "出现 503 时，按提示确认是否处于计划维护窗口，并记录发生时间和请求 ID；也可能是服务负载或依赖异常。避免高频自动重试，使用退避策略并联系技术支持核实。不能凭静态知识库宣布当前正在维护。"
+        },
+        {
+          "title": "服务启动失败与数据库连接",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "fd624a869bc67f22",
+          "excerpt": "私有部署后服务启动失败，且日志出现数据库连接错误时，检查数据库服务是否运行、应用到数据库的网络是否可达、配置的主机和端口是否正确、数据库账号是否具有所需权限。提供日志时遮盖密码和连接字符串中的敏感字段。不要把删除数据库或清空数据作为常规排查方法；仍然失败时收集产品版本、启动时间和脱敏日志。"
+        },
+        {
+          "title": "成员邀请与邀请失效",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "93bb4c786ad380a2",
+          "excerpt": "成员邀请链接失效时，请项目管理员确认邀请是否过期、受邀邮箱是否正确，以及用户是否已加入目标企业。应由管理员通过产品界面重新发出邀请。客服不能替用户跳过企业验证，也不能把其他企业的成员资料发给提问者。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-026",
+      "kind": "answerable",
+      "category": "api",
+      "question": "为什么任务列表只返回前100条？",
+      "expected_title": "API 分页与结果数量",
+      "retrieved": [
+        {
+          "title": "API 分页与结果数量",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "2428bb9eac146369",
+          "excerpt": "星河协作平台演示版的任务列表接口每页最多返回 100 条。需要更多结果时，应使用响应中的下一页游标继续读取，不要把第一页当成全部数据。分页游标仅对当前查询条件有效；改变项目或筛选条件后，应重新从第一页开始。"
+        },
+        {
+          "title": "409 并发更新冲突",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "89039678a9618e58",
+          "excerpt": "同时修改同一任务返回 409 或 VERSION_CONFLICT 时，重新读取最新任务版本，核对他人的变更，再基于新版本提交。不要自动覆盖其他成员编辑的内容。若多次冲突，提供任务 ID、发生时间和脱敏请求 ID 排查。"
+        },
+        {
+          "title": "500 服务内部错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "a661dd04a645a628",
+          "excerpt": "接口返回 500 时，先保留请求 ID、发生时间、环境和复现步骤。可以在确认操作可安全重试后再次尝试；对于创建或支付类写操作，须先查询结果并使用幂等标识，避免重复写入。静态文档不能证明服务已恢复，不能承诺确切修复时间。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-027",
+      "kind": "answerable",
+      "category": "api",
+      "question": "改变筛选条件后还能沿用原分页游标吗？",
+      "expected_title": "API 分页与结果数量",
+      "retrieved": [
+        {
+          "title": "API 分页与结果数量",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "2428bb9eac146369",
+          "excerpt": "星河协作平台演示版的任务列表接口每页最多返回 100 条。需要更多结果时，应使用响应中的下一页游标继续读取，不要把第一页当成全部数据。分页游标仅对当前查询条件有效；改变项目或筛选条件后，应重新从第一页开始。"
+        },
+        {
+          "title": "搜索索引更新延迟",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "761ac51f8b7f4a3a",
+          "excerpt": "任务修改后搜索结果短时间未更新时，先打开任务详情核对源记录是否已保存。演示平台的搜索索引异步更新，搜索结果可能短暂落后于详情；不要重复创建任务。长时间不一致时提供任务 ID、修改时间和搜索条件，由技术支持排查索引状态。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-028",
+      "kind": "answerable",
+      "category": "api",
+      "question": "创建任务请求超时，怎么避免重试产生两条任务？",
+      "expected_title": "API 请求超时与安全重试",
+      "retrieved": [
+        {
+          "title": "API 请求超时与安全重试",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "85ec8be6c1aa9f1b",
+          "excerpt": "接口请求超时不等于写入一定失败。读操作可在合理退避后重试；创建任务等写操作要先查询结果并复用同一提交标识，避免产生重复任务。持续超时时记录接口路径、发生时间、请求 ID 和网络环境，不要把提高超时值当作唯一修复手段。"
+        },
+        {
+          "title": "500 服务内部错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "a661dd04a645a628",
+          "excerpt": "接口返回 500 时，先保留请求 ID、发生时间、环境和复现步骤。可以在确认操作可安全重试后再次尝试；对于创建或支付类写操作，须先查询结果并使用幂等标识，避免重复写入。静态文档不能证明服务已恢复，不能承诺确切修复时间。"
+        },
+        {
+          "title": "搜索索引更新延迟",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "761ac51f8b7f4a3a",
+          "excerpt": "任务修改后搜索结果短时间未更新时，先打开任务详情核对源记录是否已保存。演示平台的搜索索引异步更新，搜索结果可能短暂落后于详情；不要重复创建任务。长时间不一致时提供任务 ID、修改时间和搜索条件，由技术支持排查索引状态。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-029",
+      "kind": "answerable",
+      "category": "api",
+      "question": "超时以后能认定任务没有写入吗？",
+      "expected_title": "API 请求超时与安全重试",
+      "retrieved": [
+        {
+          "title": "API 请求超时与安全重试",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "85ec8be6c1aa9f1b",
+          "excerpt": "接口请求超时不等于写入一定失败。读操作可在合理退避后重试；创建任务等写操作要先查询结果并复用同一提交标识，避免产生重复任务。持续超时时记录接口路径、发生时间、请求 ID 和网络环境，不要把提高超时值当作唯一修复手段。"
+        },
+        {
+          "title": "导出失败与导出数量限制",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "49c17f76d52cce94",
+          "excerpt": "星河协作平台 2.0 单次最多导出 5000 条任务记录，超过时应按项目、日期或状态筛选后分批导出。访客无导出权限；管理员和编辑者可导出其有权访问的项目数据。数据量未超限且权限正确但仍导出失败时，应提供筛选条件、记录数量、发生时间和请求 ID。助手不得宣称已生成或下载文件，除非工具确认成功。"
+        },
+        {
+          "title": "Webhook 重试与重复事件",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "e70f5c29bf9e15af",
+          "excerpt": "演示平台可能因回调超时或非成功响应而重试 Webhook，同一事件可能投递多次。接收方应按事件 ID 实现幂等处理，不能把每次投递都当成新任务。若需要查具体事件是否投递成功，应通过已授权的事件记录工具查询；当前助手没有该工具，不能声称某次回调已送达。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-030",
+      "kind": "answerable",
+      "category": "webhook",
+      "question": "Webhook 回调地址怎么配置并测试？",
+      "expected_title": "Webhook 回调配置",
+      "retrieved": [
+        {
+          "title": "Webhook 回调配置",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "83bb456bf199a8af",
+          "excerpt": "演示版支持为任务变更配置 HTTPS Webhook 回调。回调地址需由项目管理员设置，并能被平台服务访问。配置后应发送测试事件核对响应；回调失败时检查地址、证书、返回状态码和网络放行规则。不要要求用户关闭 HTTPS 证书校验。"
+        },
+        {
+          "title": "企业单点登录失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "d1c445df69697772",
+          "excerpt": "启用 SSO 的企业登录失败时，先确认企业登录入口、身份提供方配置、回调地址及用户是否被分配到该应用。若出现签名或时间相关错误，由管理员核对证书与时钟。不要建议用户关闭 SSO 或共享管理员账号；收集脱敏错误码后升级处理。"
+        },
+        {
+          "title": "429 请求过多与配额",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "574eab5cc60f0852",
+          "excerpt": "接口出现 429 或 RATE_LIMIT_EXCEEDED 时，先确认请求是否超过应用在当前限流窗口的额度；降低请求频率，并在下一个限流窗口再试。若持续发生，记录应用标识、请求 ID 和发生时间交给技术支持。具体应用当前配额及某次调用结果必须在验证演示应用身份后调用业务工具查询；静态文档不能证明实时配额、限流窗口的实际结束时间或故障已恢复。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-031",
+      "kind": "answerable",
+      "category": "webhook",
+      "question": "配置回调时可以关闭HTTPS证书校验吗？",
+      "expected_title": "Webhook 回调配置",
+      "retrieved": [
+        {
+          "title": "Webhook 回调配置",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "83bb456bf199a8af",
+          "excerpt": "演示版支持为任务变更配置 HTTPS Webhook 回调。回调地址需由项目管理员设置，并能被平台服务访问。配置后应发送测试事件核对响应；回调失败时检查地址、证书、返回状态码和网络放行规则。不要要求用户关闭 HTTPS 证书校验。"
+        },
+        {
+          "title": "企业单点登录失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "d1c445df69697772",
+          "excerpt": "启用 SSO 的企业登录失败时，先确认企业登录入口、身份提供方配置、回调地址及用户是否被分配到该应用。若出现签名或时间相关错误，由管理员核对证书与时钟。不要建议用户关闭 SSO 或共享管理员账号；收集脱敏错误码后升级处理。"
+        },
+        {
+          "title": "多因素认证与设备更换",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "01efa3d6f5c6b24c",
+          "excerpt": "启用多因素认证后更换设备的用户，应按企业配置的正式恢复流程处理，并完成身份核验。技术支持不能通过聊天关闭 MFA，也不得索要一次性验证码或恢复代码。管理员修改认证设置后，需提醒用户重新登录验证。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-032",
+      "kind": "answerable",
+      "category": "webhook",
+      "question": "Webhook 接收方怎么核验签名？",
+      "expected_title": "Webhook 签名校验",
+      "retrieved": [
+        {
+          "title": "Webhook 签名校验",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c463715c0632f8ba",
+          "excerpt": "收到 Webhook 时，接收方应使用配置的签名密钥验证请求签名，并检查时间戳。验证失败须拒绝处理，不应因为来源 IP 看似可信就跳过校验。签名密钥只能通过正式配置渠道更换，聊天与工单中不得提交完整密钥。"
+        },
+        {
+          "title": "Webhook 重试与重复事件",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "e70f5c29bf9e15af",
+          "excerpt": "演示平台可能因回调超时或非成功响应而重试 Webhook，同一事件可能投递多次。接收方应按事件 ID 实现幂等处理，不能把每次投递都当成新任务。若需要查具体事件是否投递成功，应通过已授权的事件记录工具查询；当前助手没有该工具，不能声称某次回调已送达。"
+        },
+        {
+          "title": "隐私与诊断日志脱敏",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "ad39fffe513ab1a0",
+          "excerpt": "排查错误时可以收集请求 ID、状态码、产品版本、脱敏日志片段和复现步骤。提交日志前应遮盖密码、访问令牌、签名密钥、完整连接串和个人信息。当前演示验证码只用于本地合成数据；任何真实生产凭据都不应进入聊天或技术工单。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-033",
+      "kind": "answerable",
+      "category": "webhook",
+      "question": "只看来源IP是否可信就能跳过回调签名吗？",
+      "expected_title": "Webhook 签名校验",
+      "retrieved": [
+        {
+          "title": "Webhook 签名校验",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c463715c0632f8ba",
+          "excerpt": "收到 Webhook 时，接收方应使用配置的签名密钥验证请求签名，并检查时间戳。验证失败须拒绝处理，不应因为来源 IP 看似可信就跳过校验。签名密钥只能通过正式配置渠道更换，聊天与工单中不得提交完整密钥。"
+        },
+        {
+          "title": "Webhook 重试与重复事件",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "e70f5c29bf9e15af",
+          "excerpt": "演示平台可能因回调超时或非成功响应而重试 Webhook，同一事件可能投递多次。接收方应按事件 ID 实现幂等处理，不能把每次投递都当成新任务。若需要查具体事件是否投递成功，应通过已授权的事件记录工具查询；当前助手没有该工具，不能声称某次回调已送达。"
+        },
+        {
+          "title": "企业单点登录失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "d1c445df69697772",
+          "excerpt": "启用 SSO 的企业登录失败时，先确认企业登录入口、身份提供方配置、回调地址及用户是否被分配到该应用。若出现签名或时间相关错误，由管理员核对证书与时钟。不要建议用户关闭 SSO 或共享管理员账号；收集脱敏错误码后升级处理。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-034",
+      "kind": "answerable",
+      "category": "webhook",
+      "question": "Webhook 重试导致事件重复，怎么避免重复创建？",
+      "expected_title": "Webhook 重试与重复事件",
+      "retrieved": [
+        {
+          "title": "500 服务内部错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "a661dd04a645a628",
+          "excerpt": "接口返回 500 时，先保留请求 ID、发生时间、环境和复现步骤。可以在确认操作可安全重试后再次尝试；对于创建或支付类写操作，须先查询结果并使用幂等标识，避免重复写入。静态文档不能证明服务已恢复，不能承诺确切修复时间。"
+        },
+        {
+          "title": "API 请求超时与安全重试",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "85ec8be6c1aa9f1b",
+          "excerpt": "接口请求超时不等于写入一定失败。读操作可在合理退避后重试；创建任务等写操作要先查询结果并复用同一提交标识，避免产生重复任务。持续超时时记录接口路径、发生时间、请求 ID 和网络环境，不要把提高超时值当作唯一修复手段。"
+        },
+        {
+          "title": "Webhook 重试与重复事件",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "e70f5c29bf9e15af",
+          "excerpt": "演示平台可能因回调超时或非成功响应而重试 Webhook，同一事件可能投递多次。接收方应按事件 ID 实现幂等处理，不能把每次投递都当成新任务。若需要查具体事件是否投递成功，应通过已授权的事件记录工具查询；当前助手没有该工具，不能声称某次回调已送达。"
+        }
+      ],
+      "evidence_rank": 3
+    },
+    {
+      "id": "SAAS-035",
+      "kind": "answerable",
+      "category": "webhook",
+      "question": "相同Webhook事件可能被投递多次吗？",
+      "expected_title": "Webhook 重试与重复事件",
+      "retrieved": [
+        {
+          "title": "Webhook 重试与重复事件",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "e70f5c29bf9e15af",
+          "excerpt": "演示平台可能因回调超时或非成功响应而重试 Webhook，同一事件可能投递多次。接收方应按事件 ID 实现幂等处理，不能把每次投递都当成新任务。若需要查具体事件是否投递成功，应通过已授权的事件记录工具查询；当前助手没有该工具，不能声称某次回调已送达。"
+        },
+        {
+          "title": "500 服务内部错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "a661dd04a645a628",
+          "excerpt": "接口返回 500 时，先保留请求 ID、发生时间、环境和复现步骤。可以在确认操作可安全重试后再次尝试；对于创建或支付类写操作，须先查询结果并使用幂等标识，避免重复写入。静态文档不能证明服务已恢复，不能承诺确切修复时间。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-036",
+      "kind": "answerable",
+      "category": "import",
+      "question": "CSV任务导入失败先查编码还是密码？",
+      "expected_title": "CSV 任务导入失败",
+      "retrieved": [
+        {
+          "title": "CSV 任务导入失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "da1f3cbbffda9b98",
+          "excerpt": "导入任务 CSV 失败时，核对 UTF-8 编码、列名、必填字段和日期格式，并先用少量脱敏数据复现。若部分行失败，保存失败行及错误原因后修正再导入，避免把整份文件重复导入。当前知识库没有模板下载地址，助手不能编造下载链接。"
+        },
+        {
+          "title": "问题排查前需要的信息",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "1e293d0c2fa1af66",
+          "excerpt": "排查技术问题时，先确认产品版本、云端版或私有部署版、具体操作、错误码和发生时间。如果已有报错截图或请求 ID，可补充脱敏后的内容。优先根据已提供的信息查找排查步骤，只追问影响判断的缺失信息。不得索要密码、完整访问令牌、API 密钥或完整数据库连接凭据。"
+        },
+        {
+          "title": "服务启动失败与数据库连接",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "fd624a869bc67f22",
+          "excerpt": "私有部署后服务启动失败，且日志出现数据库连接错误时，检查数据库服务是否运行、应用到数据库的网络是否可达、配置的主机和端口是否正确、数据库账号是否具有所需权限。提供日志时遮盖密码和连接字符串中的敏感字段。不要把删除数据库或清空数据作为常规排查方法；仍然失败时收集产品版本、启动时间和脱敏日志。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-037",
+      "kind": "answerable",
+      "category": "import",
+      "question": "部分行导入失败可以重新导入整个文件吗？",
+      "expected_title": "CSV 任务导入失败",
+      "retrieved": [
+        {
+          "title": "CSV 任务导入失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "da1f3cbbffda9b98",
+          "excerpt": "导入任务 CSV 失败时，核对 UTF-8 编码、列名、必填字段和日期格式，并先用少量脱敏数据复现。若部分行失败，保存失败行及错误原因后修正再导入，避免把整份文件重复导入。当前知识库没有模板下载地址，助手不能编造下载链接。"
+        },
+        {
+          "title": "附件上传失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "7c543a30bccb67d7",
+          "excerpt": "演示版单个任务附件不能超过 20 MB；超限时应压缩或拆分文件。若文件未超限，检查上传权限、网络连接和文件格式，并记录错误码与请求 ID。当前知识库不保证所有文件格式都支持；未知格式应先核对产品版本文档。"
+        },
+        {
+          "title": "版本兼容与批量导出",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "88b4cc863fa704e0",
+          "excerpt": "本演示产品中，批量导出功能从星河协作平台 2.0 版本开始提供，1.0 版本不支持批量导出。2.0 的 API 客户端应配套使用 2.0 的接口文档；不能直接假设 1.0 的请求参数仍然有效。用户询问功能不可用时，应先确认产品版本与角色，再判断是否属于版本不支持或权限不足。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-038",
+      "kind": "answerable",
+      "category": "upload",
+      "question": "任务附件超过20MB怎么办？",
+      "expected_title": "附件上传失败",
+      "retrieved": [
+        {
+          "title": "附件上传失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "7c543a30bccb67d7",
+          "excerpt": "演示版单个任务附件不能超过 20 MB；超限时应压缩或拆分文件。若文件未超限，检查上传权限、网络连接和文件格式，并记录错误码与请求 ID。当前知识库不保证所有文件格式都支持；未知格式应先核对产品版本文档。"
+        },
+        {
+          "title": "导出失败与导出数量限制",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "49c17f76d52cce94",
+          "excerpt": "星河协作平台 2.0 单次最多导出 5000 条任务记录，超过时应按项目、日期或状态筛选后分批导出。访客无导出权限；管理员和编辑者可导出其有权访问的项目数据。数据量未超限且权限正确但仍导出失败时，应提供筛选条件、记录数量、发生时间和请求 ID。助手不得宣称已生成或下载文件，除非工具确认成功。"
+        },
+        {
+          "title": "API 请求超时与安全重试",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "85ec8be6c1aa9f1b",
+          "excerpt": "接口请求超时不等于写入一定失败。读操作可在合理退避后重试；创建任务等写操作要先查询结果并复用同一提交标识，避免产生重复任务。持续超时时记录接口路径、发生时间、请求 ID 和网络环境，不要把提高超时值当作唯一修复手段。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-039",
+      "kind": "answerable",
+      "category": "upload",
+      "question": "上传附件没超限仍失败应检查什么？",
+      "expected_title": "附件上传失败",
+      "retrieved": [
+        {
+          "title": "附件上传失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "7c543a30bccb67d7",
+          "excerpt": "演示版单个任务附件不能超过 20 MB；超限时应压缩或拆分文件。若文件未超限，检查上传权限、网络连接和文件格式，并记录错误码与请求 ID。当前知识库不保证所有文件格式都支持；未知格式应先核对产品版本文档。"
+        },
+        {
+          "title": "服务启动失败与数据库连接",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "fd624a869bc67f22",
+          "excerpt": "私有部署后服务启动失败，且日志出现数据库连接错误时，检查数据库服务是否运行、应用到数据库的网络是否可达、配置的主机和端口是否正确、数据库账号是否具有所需权限。提供日志时遮盖密码和连接字符串中的敏感字段。不要把删除数据库或清空数据作为常规排查方法；仍然失败时收集产品版本、启动时间和脱敏日志。"
+        },
+        {
+          "title": "API 请求超时与安全重试",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "85ec8be6c1aa9f1b",
+          "excerpt": "接口请求超时不等于写入一定失败。读操作可在合理退避后重试；创建任务等写操作要先查询结果并复用同一提交标识，避免产生重复任务。持续超时时记录接口路径、发生时间、请求 ID 和网络环境，不要把提高超时值当作唯一修复手段。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-040",
+      "kind": "answerable",
+      "category": "search",
+      "question": "任务明明更新了搜索却没有显示，是不是没保存？",
+      "expected_title": "搜索索引更新延迟",
+      "retrieved": [
+        {
+          "title": "搜索索引更新延迟",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "761ac51f8b7f4a3a",
+          "excerpt": "任务修改后搜索结果短时间未更新时，先打开任务详情核对源记录是否已保存。演示平台的搜索索引异步更新，搜索结果可能短暂落后于详情；不要重复创建任务。长时间不一致时提供任务 ID、修改时间和搜索条件，由技术支持排查索引状态。"
+        },
+        {
+          "title": "CSV 任务导入失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "da1f3cbbffda9b98",
+          "excerpt": "导入任务 CSV 失败时，核对 UTF-8 编码、列名、必填字段和日期格式，并先用少量脱敏数据复现。若部分行失败，保存失败行及错误原因后修正再导入，避免把整份文件重复导入。当前知识库没有模板下载地址，助手不能编造下载链接。"
+        },
+        {
+          "title": "503 维护或服务暂不可用",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "d1b3033ad500e26e",
+          "excerpt": "出现 503 时，按提示确认是否处于计划维护窗口，并记录发生时间和请求 ID；也可能是服务负载或依赖异常。避免高频自动重试，使用退避策略并联系技术支持核实。不能凭静态知识库宣布当前正在维护。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-041",
+      "kind": "answerable",
+      "category": "search",
+      "question": "搜索结果比详情旧要重复创建任务吗？",
+      "expected_title": "搜索索引更新延迟",
+      "retrieved": [
+        {
+          "title": "搜索索引更新延迟",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "761ac51f8b7f4a3a",
+          "excerpt": "任务修改后搜索结果短时间未更新时，先打开任务详情核对源记录是否已保存。演示平台的搜索索引异步更新，搜索结果可能短暂落后于详情；不要重复创建任务。长时间不一致时提供任务 ID、修改时间和搜索条件，由技术支持排查索引状态。"
+        },
+        {
+          "title": "API 请求超时与安全重试",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "85ec8be6c1aa9f1b",
+          "excerpt": "接口请求超时不等于写入一定失败。读操作可在合理退避后重试；创建任务等写操作要先查询结果并复用同一提交标识，避免产生重复任务。持续超时时记录接口路径、发生时间、请求 ID 和网络环境，不要把提高超时值当作唯一修复手段。"
+        },
+        {
+          "title": "500 服务内部错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "a661dd04a645a628",
+          "excerpt": "接口返回 500 时，先保留请求 ID、发生时间、环境和复现步骤。可以在确认操作可安全重试后再次尝试；对于创建或支付类写操作，须先查询结果并使用幂等标识，避免重复写入。静态文档不能证明服务已恢复，不能承诺确切修复时间。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-042",
+      "kind": "answerable",
+      "category": "auth",
+      "question": "企业SSO登录失败应该检查回调地址吗？",
+      "expected_title": "企业单点登录失败",
+      "retrieved": [
+        {
+          "title": "企业单点登录失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "d1c445df69697772",
+          "excerpt": "启用 SSO 的企业登录失败时，先确认企业登录入口、身份提供方配置、回调地址及用户是否被分配到该应用。若出现签名或时间相关错误，由管理员核对证书与时钟。不要建议用户关闭 SSO 或共享管理员账号；收集脱敏错误码后升级处理。"
+        },
+        {
+          "title": "Webhook 回调配置",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "83bb456bf199a8af",
+          "excerpt": "演示版支持为任务变更配置 HTTPS Webhook 回调。回调地址需由项目管理员设置，并能被平台服务访问。配置后应发送测试事件核对响应；回调失败时检查地址、证书、返回状态码和网络放行规则。不要要求用户关闭 HTTPS 证书校验。"
+        },
+        {
+          "title": "403 无权限访问项目",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "6c05bc75622134ba",
+          "excerpt": "访问项目出现 403 或“无权限”时，先确认当前登录账号和所属企业，再请项目管理员检查账号是否加入该项目、角色是否允许当前操作。访客仅能查看，编辑操作需要编辑者或管理员权限。权限调整后退出并重新登录再试。仍然出现 403 时，记录项目标识、发生时间和请求 ID，提交技术支持；不要通过公开项目或关闭鉴权来绕过权限检查。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-043",
+      "kind": "answerable",
+      "category": "auth",
+      "question": "单点登录签名错误可以关闭SSO来绕过吗？",
+      "expected_title": "企业单点登录失败",
+      "retrieved": [
+        {
+          "title": "企业单点登录失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "d1c445df69697772",
+          "excerpt": "启用 SSO 的企业登录失败时，先确认企业登录入口、身份提供方配置、回调地址及用户是否被分配到该应用。若出现签名或时间相关错误，由管理员核对证书与时钟。不要建议用户关闭 SSO 或共享管理员账号；收集脱敏错误码后升级处理。"
+        },
+        {
+          "title": "403 无权限访问项目",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "6c05bc75622134ba",
+          "excerpt": "访问项目出现 403 或“无权限”时，先确认当前登录账号和所属企业，再请项目管理员检查账号是否加入该项目、角色是否允许当前操作。访客仅能查看，编辑操作需要编辑者或管理员权限。权限调整后退出并重新登录再试。仍然出现 403 时，记录项目标识、发生时间和请求 ID，提交技术支持；不要通过公开项目或关闭鉴权来绕过权限检查。"
+        },
+        {
+          "title": "401 登录失效与令牌过期",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c1dab4f0c08f590c",
+          "excerpt": "接口返回 401 或“登录已失效”时，先重新登录；API 调用者应确认访问令牌是否过期、是否属于当前环境以及认证请求头是否正确。使用管理员提供的正式渠道更新令牌，不要把完整令牌粘贴到聊天或工单中。更新后仍出现 401 时，提供产品版本、接口路径、发生时间和脱敏后的错误信息。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-044",
+      "kind": "answerable",
+      "category": "auth",
+      "question": "换手机后无法完成MFA该走什么流程？",
+      "expected_title": "多因素认证与设备更换",
+      "retrieved": [
+        {
+          "title": "多因素认证与设备更换",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "01efa3d6f5c6b24c",
+          "excerpt": "启用多因素认证后更换设备的用户，应按企业配置的正式恢复流程处理，并完成身份核验。技术支持不能通过聊天关闭 MFA，也不得索要一次性验证码或恢复代码。管理员修改认证设置后，需提醒用户重新登录验证。"
+        },
+        {
+          "title": "企业单点登录失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "d1c445df69697772",
+          "excerpt": "启用 SSO 的企业登录失败时，先确认企业登录入口、身份提供方配置、回调地址及用户是否被分配到该应用。若出现签名或时间相关错误，由管理员核对证书与时钟。不要建议用户关闭 SSO 或共享管理员账号；收集脱敏错误码后升级处理。"
+        },
+        {
+          "title": "401 登录失效与令牌过期",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c1dab4f0c08f590c",
+          "excerpt": "接口返回 401 或“登录已失效”时，先重新登录；API 调用者应确认访问令牌是否过期、是否属于当前环境以及认证请求头是否正确。使用管理员提供的正式渠道更新令牌，不要把完整令牌粘贴到聊天或工单中。更新后仍出现 401 时，提供产品版本、接口路径、发生时间和脱敏后的错误信息。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-045",
+      "kind": "answerable",
+      "category": "auth",
+      "question": "客服可以索取一次性验证码帮我关闭MFA吗？",
+      "expected_title": "多因素认证与设备更换",
+      "retrieved": [
+        {
+          "title": "多因素认证与设备更换",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "01efa3d6f5c6b24c",
+          "excerpt": "启用多因素认证后更换设备的用户，应按企业配置的正式恢复流程处理，并完成身份核验。技术支持不能通过聊天关闭 MFA，也不得索要一次性验证码或恢复代码。管理员修改认证设置后，需提醒用户重新登录验证。"
+        },
+        {
+          "title": "隐私与诊断日志脱敏",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "ad39fffe513ab1a0",
+          "excerpt": "排查错误时可以收集请求 ID、状态码、产品版本、脱敏日志片段和复现步骤。提交日志前应遮盖密码、访问令牌、签名密钥、完整连接串和个人信息。当前演示验证码只用于本地合成数据；任何真实生产凭据都不应进入聊天或技术工单。"
+        },
+        {
+          "title": "Webhook 签名校验",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c463715c0632f8ba",
+          "excerpt": "收到 Webhook 时，接收方应使用配置的签名密钥验证请求签名，并检查时间戳。验证失败须拒绝处理，不应因为来源 IP 看似可信就跳过校验。签名密钥只能通过正式配置渠道更换，聊天与工单中不得提交完整密钥。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-046",
+      "kind": "answerable",
+      "category": "members",
+      "question": "邀请链接失效后谁能重新邀请？",
+      "expected_title": "成员邀请与邀请失效",
+      "retrieved": [
+        {
+          "title": "成员邀请与邀请失效",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "93bb4c786ad380a2",
+          "excerpt": "成员邀请链接失效时，请项目管理员确认邀请是否过期、受邀邮箱是否正确，以及用户是否已加入目标企业。应由管理员通过产品界面重新发出邀请。客服不能替用户跳过企业验证，也不能把其他企业的成员资料发给提问者。"
+        },
+        {
+          "title": "401 登录失效与令牌过期",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c1dab4f0c08f590c",
+          "excerpt": "接口返回 401 或“登录已失效”时，先重新登录；API 调用者应确认访问令牌是否过期、是否属于当前环境以及认证请求头是否正确。使用管理员提供的正式渠道更新令牌，不要把完整令牌粘贴到聊天或工单中。更新后仍出现 401 时，提供产品版本、接口路径、发生时间和脱敏后的错误信息。"
+        },
+        {
+          "title": "500 服务内部错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "a661dd04a645a628",
+          "excerpt": "接口返回 500 时，先保留请求 ID、发生时间、环境和复现步骤。可以在确认操作可安全重试后再次尝试；对于创建或支付类写操作，须先查询结果并使用幂等标识，避免重复写入。静态文档不能证明服务已恢复，不能承诺确切修复时间。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-047",
+      "kind": "answerable",
+      "category": "members",
+      "question": "成员收不到邀请应核对邮箱与企业吗？",
+      "expected_title": "成员邀请与邀请失效",
+      "retrieved": [
+        {
+          "title": "成员邀请与邀请失效",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "93bb4c786ad380a2",
+          "excerpt": "成员邀请链接失效时，请项目管理员确认邀请是否过期、受邀邮箱是否正确，以及用户是否已加入目标企业。应由管理员通过产品界面重新发出邀请。客服不能替用户跳过企业验证，也不能把其他企业的成员资料发给提问者。"
+        },
+        {
+          "title": "企业单点登录失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "d1c445df69697772",
+          "excerpt": "启用 SSO 的企业登录失败时，先确认企业登录入口、身份提供方配置、回调地址及用户是否被分配到该应用。若出现签名或时间相关错误，由管理员核对证书与时钟。不要建议用户关闭 SSO 或共享管理员账号；收集脱敏错误码后升级处理。"
+        },
+        {
+          "title": "Webhook 签名校验",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c463715c0632f8ba",
+          "excerpt": "收到 Webhook 时，接收方应使用配置的签名密钥验证请求签名，并检查时间戳。验证失败须拒绝处理，不应因为来源 IP 看似可信就跳过校验。签名密钥只能通过正式配置渠道更换，聊天与工单中不得提交完整密钥。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-048",
+      "kind": "answerable",
+      "category": "project",
+      "question": "项目归档后是永久删除了吗？",
+      "expected_title": "项目归档与恢复",
+      "retrieved": [
+        {
+          "title": "项目归档与恢复",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "28a564271495b28e",
+          "excerpt": "归档项目后，项目默认不再出现在活跃项目列表中，但不代表已永久删除。具有管理员权限的用户应在归档列表检查项目并按界面流程申请恢复。当前文档没有永久删除后的恢复保证；遇到删除事故应立即保留项目 ID 和时间并提交人工工单。"
+        },
+        {
+          "title": "404 项目或任务不存在",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "8b7a484ed49d647c",
+          "excerpt": "读取项目或任务返回 404 时，先确认资源 ID、所属企业和环境是否正确，再检查资源是否已被删除或归档。为避免暴露其他企业资源，未授权访问也可能统一显示不可用；单凭 404 不能断定资源不存在。不要向未经验证的用户披露项目名称或任务内容。"
+        },
+        {
+          "title": "500 服务内部错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "a661dd04a645a628",
+          "excerpt": "接口返回 500 时，先保留请求 ID、发生时间、环境和复现步骤。可以在确认操作可安全重试后再次尝试；对于创建或支付类写操作，须先查询结果并使用幂等标识，避免重复写入。静态文档不能证明服务已恢复，不能承诺确切修复时间。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-049",
+      "kind": "answerable",
+      "category": "project",
+      "question": "找不到活跃项目时要不要查看归档列表？",
+      "expected_title": "项目归档与恢复",
+      "retrieved": [
+        {
+          "title": "项目归档与恢复",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "28a564271495b28e",
+          "excerpt": "归档项目后，项目默认不再出现在活跃项目列表中，但不代表已永久删除。具有管理员权限的用户应在归档列表检查项目并按界面流程申请恢复。当前文档没有永久删除后的恢复保证；遇到删除事故应立即保留项目 ID 和时间并提交人工工单。"
+        },
+        {
+          "title": "403 无权限访问项目",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "6c05bc75622134ba",
+          "excerpt": "访问项目出现 403 或“无权限”时，先确认当前登录账号和所属企业，再请项目管理员检查账号是否加入该项目、角色是否允许当前操作。访客仅能查看，编辑操作需要编辑者或管理员权限。权限调整后退出并重新登录再试。仍然出现 403 时，记录项目标识、发生时间和请求 ID，提交技术支持；不要通过公开项目或关闭鉴权来绕过权限检查。"
+        },
+        {
+          "title": "404 项目或任务不存在",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "8b7a484ed49d647c",
+          "excerpt": "读取项目或任务返回 404 时，先确认资源 ID、所属企业和环境是否正确，再检查资源是否已被删除或归档。为避免暴露其他企业资源，未授权访问也可能统一显示不可用；单凭 404 不能断定资源不存在。不要向未经验证的用户披露项目名称或任务内容。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-050",
+      "kind": "answerable",
+      "category": "audit",
+      "question": "普通编辑者能看企业审计日志吗？",
+      "expected_title": "审计日志查询权限",
+      "retrieved": [
+        {
+          "title": "审计日志查询权限",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "9bd646cee3cf2940",
+          "excerpt": "演示版审计日志记录项目成员和角色变更等操作。只有企业管理员可以在授权范围内查看审计记录；普通成员不能仅凭项目编辑权限查询企业审计日志。客服不应在聊天中直接展示其他人的完整操作记录。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-051",
+      "kind": "answerable",
+      "category": "audit",
+      "question": "谁可以查看角色变更的审计记录？",
+      "expected_title": "审计日志查询权限",
+      "retrieved": [
+        {
+          "title": "审计日志查询权限",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "9bd646cee3cf2940",
+          "excerpt": "演示版审计日志记录项目成员和角色变更等操作。只有企业管理员可以在授权范围内查看审计记录；普通成员不能仅凭项目编辑权限查询企业审计日志。客服不应在聊天中直接展示其他人的完整操作记录。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-052",
+      "kind": "answerable",
+      "category": "privacy",
+      "question": "提交排障日志之前哪些信息必须遮盖？",
+      "expected_title": "隐私与诊断日志脱敏",
+      "retrieved": [
+        {
+          "title": "隐私与诊断日志脱敏",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "ad39fffe513ab1a0",
+          "excerpt": "排查错误时可以收集请求 ID、状态码、产品版本、脱敏日志片段和复现步骤。提交日志前应遮盖密码、访问令牌、签名密钥、完整连接串和个人信息。当前演示验证码只用于本地合成数据；任何真实生产凭据都不应进入聊天或技术工单。"
+        },
+        {
+          "title": "服务启动失败与数据库连接",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "fd624a869bc67f22",
+          "excerpt": "私有部署后服务启动失败，且日志出现数据库连接错误时，检查数据库服务是否运行、应用到数据库的网络是否可达、配置的主机和端口是否正确、数据库账号是否具有所需权限。提供日志时遮盖密码和连接字符串中的敏感字段。不要把删除数据库或清空数据作为常规排查方法；仍然失败时收集产品版本、启动时间和脱敏日志。"
+        },
+        {
+          "title": "问题排查前需要的信息",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "1e293d0c2fa1af66",
+          "excerpt": "排查技术问题时，先确认产品版本、云端版或私有部署版、具体操作、错误码和发生时间。如果已有报错截图或请求 ID，可补充脱敏后的内容。优先根据已提供的信息查找排查步骤，只追问影响判断的缺失信息。不得索要密码、完整访问令牌、API 密钥或完整数据库连接凭据。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-053",
+      "kind": "answerable",
+      "category": "privacy",
+      "question": "我能把完整连接串贴进技术工单吗？",
+      "expected_title": "隐私与诊断日志脱敏",
+      "retrieved": [
+        {
+          "title": "隐私与诊断日志脱敏",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "ad39fffe513ab1a0",
+          "excerpt": "排查错误时可以收集请求 ID、状态码、产品版本、脱敏日志片段和复现步骤。提交日志前应遮盖密码、访问令牌、签名密钥、完整连接串和个人信息。当前演示验证码只用于本地合成数据；任何真实生产凭据都不应进入聊天或技术工单。"
+        },
+        {
+          "title": "技术支持工单所需信息",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "841d266b735a60e8",
+          "excerpt": "文档排查无法解决问题或用户明确要求人工处理时，可以建议提交技术支持工单。建议收集问题标题、产品版本、部署方式、问题描述、复现步骤、错误码和影响范围。创建前展示拟提交内容并等待用户明确确认；只有创建工具返回成功后才能告知工单编号。此章节描述目标业务规则，不能作为工单已经创建的证据。"
+        },
+        {
+          "title": "知识库未覆盖的问题",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c762f9e6a42ccc88",
+          "excerpt": "当前知识库未收录收费报价、合同条款、客户的实时系统状态和具体修复完成时间。遇到未覆盖的问题，应说明现有资料不足，并建议联系对应负责人或技术支持。不能根据其他产品的惯例编造本产品规则，也不能把检索到的相似章节作为确定结论。"
+        }
+      ],
+      "evidence_rank": 1
+    },
+    {
+      "id": "SAAS-054",
+      "kind": "unrelated",
+      "category": "unrelated",
+      "question": "今天东京天气怎么样？",
+      "expected_title": null,
+      "retrieved": [],
+      "no_hit": true
+    },
+    {
+      "id": "SAAS-055",
+      "kind": "unrelated",
+      "category": "unrelated",
+      "question": "现在美元兑日元汇率是多少？",
+      "expected_title": null,
+      "retrieved": [],
+      "no_hit": true
+    },
+    {
+      "id": "SAAS-056",
+      "kind": "unrelated",
+      "category": "unrelated",
+      "question": "请帮我写一首儿童诗",
+      "expected_title": null,
+      "retrieved": [],
+      "no_hit": true
+    },
+    {
+      "id": "SAAS-057",
+      "kind": "unrelated",
+      "category": "unrelated",
+      "question": "什么是光合作用？",
+      "expected_title": null,
+      "retrieved": [],
+      "no_hit": true
+    },
+    {
+      "id": "SAAS-058",
+      "kind": "unrelated",
+      "category": "unrelated",
+      "question": "烤鸡翅用多少度？",
+      "expected_title": null,
+      "retrieved": [],
+      "no_hit": true
+    },
+    {
+      "id": "SAAS-059",
+      "kind": "unrelated",
+      "category": "unrelated",
+      "question": "世界杯冠军是谁？",
+      "expected_title": null,
+      "retrieved": [],
+      "no_hit": true
+    },
+    {
+      "id": "SAAS-060",
+      "kind": "missing_fact",
+      "category": "missing_fact",
+      "question": "星河协作平台企业版一年多少钱？",
+      "expected_title": null,
+      "retrieved": [
+        {
+          "title": "产品定义与适用范围",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "1679d05cbf44c151",
+          "excerpt": "星河协作平台是本演示项目虚构的企业项目管理软件，支持项目、成员、角色和任务管理。提供云端版和私有部署版。技术支持适用于账号登录、项目权限、部署配置、版本兼容和数据导出。本文是演示知识库，不代表系统已实现所有功能；实时运行状态、用户权限和工单结果必须通过相应工具核实。"
+        },
+        {
+          "title": "成员角色与权限",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "71155e9e7ffc359e",
+          "excerpt": "星河协作平台的项目角色分为管理员、编辑者和访客。管理员可以管理项目成员及角色；编辑者可以创建和修改任务；访客只能查看被授权的项目内容。企业成员身份不等于自动拥有所有项目权限。需要修改角色时，应联系该项目管理员；助手不能仅根据用户描述认定权限已经生效。"
+        },
+        {
+          "title": "私有部署前的准备",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "9460a41e445a8712",
+          "excerpt": "星河协作平台私有部署前，需要确认所用产品版本，并使用该版本随附的部署配置和依赖清单。数据库连接、应用对外地址及文件存储位置应按部署文档填写。先备份已有数据，再验证数据库连通性和服务健康状态。当前知识库未收录具体安装包、镜像地址和启动命令；遇到此类问题应说明资料不足，不能编造下载链接或执行命令。"
+        }
+      ],
+      "review_required": true
+    },
+    {
+      "id": "SAAS-061",
+      "kind": "missing_fact",
+      "category": "missing_fact",
+      "question": "导出文件在云端保留几天？",
+      "expected_title": null,
+      "retrieved": [
+        {
+          "title": "500 服务内部错误",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "a661dd04a645a628",
+          "excerpt": "接口返回 500 时，先保留请求 ID、发生时间、环境和复现步骤。可以在确认操作可安全重试后再次尝试；对于创建或支付类写操作，须先查询结果并使用幂等标识，避免重复写入。静态文档不能证明服务已恢复，不能承诺确切修复时间。"
+        },
+        {
+          "title": "导出失败与导出数量限制",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "49c17f76d52cce94",
+          "excerpt": "星河协作平台 2.0 单次最多导出 5000 条任务记录，超过时应按项目、日期或状态筛选后分批导出。访客无导出权限；管理员和编辑者可导出其有权访问的项目数据。数据量未超限且权限正确但仍导出失败时，应提供筛选条件、记录数量、发生时间和请求 ID。助手不得宣称已生成或下载文件，除非工具确认成功。"
+        },
+        {
+          "title": "CSV 任务导入失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "da1f3cbbffda9b98",
+          "excerpt": "导入任务 CSV 失败时，核对 UTF-8 编码、列名、必填字段和日期格式，并先用少量脱敏数据复现。若部分行失败，保存失败行及错误原因后修正再导入，避免把整份文件重复导入。当前知识库没有模板下载地址，助手不能编造下载链接。"
+        }
+      ],
+      "review_required": true
+    },
+    {
+      "id": "SAAS-062",
+      "kind": "missing_fact",
+      "category": "missing_fact",
+      "question": "平台最多支持多少个项目成员？",
+      "expected_title": null,
+      "retrieved": [
+        {
+          "title": "产品定义与适用范围",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "1679d05cbf44c151",
+          "excerpt": "星河协作平台是本演示项目虚构的企业项目管理软件，支持项目、成员、角色和任务管理。提供云端版和私有部署版。技术支持适用于账号登录、项目权限、部署配置、版本兼容和数据导出。本文是演示知识库，不代表系统已实现所有功能；实时运行状态、用户权限和工单结果必须通过相应工具核实。"
+        },
+        {
+          "title": "导出失败与导出数量限制",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "49c17f76d52cce94",
+          "excerpt": "星河协作平台 2.0 单次最多导出 5000 条任务记录，超过时应按项目、日期或状态筛选后分批导出。访客无导出权限；管理员和编辑者可导出其有权访问的项目数据。数据量未超限且权限正确但仍导出失败时，应提供筛选条件、记录数量、发生时间和请求 ID。助手不得宣称已生成或下载文件，除非工具确认成功。"
+        },
+        {
+          "title": "成员角色与权限",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "71155e9e7ffc359e",
+          "excerpt": "星河协作平台的项目角色分为管理员、编辑者和访客。管理员可以管理项目成员及角色；编辑者可以创建和修改任务；访客只能查看被授权的项目内容。企业成员身份不等于自动拥有所有项目权限。需要修改角色时，应联系该项目管理员；助手不能仅根据用户描述认定权限已经生效。"
+        }
+      ],
+      "review_required": true
+    },
+    {
+      "id": "SAAS-063",
+      "kind": "missing_fact",
+      "category": "missing_fact",
+      "question": "Webhook失败后精确隔几分钟重试？",
+      "expected_title": null,
+      "retrieved": [
+        {
+          "title": "CSV 任务导入失败",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "da1f3cbbffda9b98",
+          "excerpt": "导入任务 CSV 失败时，核对 UTF-8 编码、列名、必填字段和日期格式，并先用少量脱敏数据复现。若部分行失败，保存失败行及错误原因后修正再导入，避免把整份文件重复导入。当前知识库没有模板下载地址，助手不能编造下载链接。"
+        },
+        {
+          "title": "API 请求超时与安全重试",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "85ec8be6c1aa9f1b",
+          "excerpt": "接口请求超时不等于写入一定失败。读操作可在合理退避后重试；创建任务等写操作要先查询结果并复用同一提交标识，避免产生重复任务。持续超时时记录接口路径、发生时间、请求 ID 和网络环境，不要把提高超时值当作唯一修复手段。"
+        },
+        {
+          "title": "401 登录失效与令牌过期",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "c1dab4f0c08f590c",
+          "excerpt": "接口返回 401 或“登录已失效”时，先重新登录；API 调用者应确认访问令牌是否过期、是否属于当前环境以及认证请求头是否正确。使用管理员提供的正式渠道更新令牌，不要把完整令牌粘贴到聊天或工单中。更新后仍出现 401 时，提供产品版本、接口路径、发生时间和脱敏后的错误信息。"
+        }
+      ],
+      "review_required": true
+    },
+    {
+      "id": "SAAS-064",
+      "kind": "missing_fact",
+      "category": "missing_fact",
+      "question": "云端数据中心具体在哪座城市？",
+      "expected_title": null,
+      "retrieved": [],
+      "review_required": true
+    },
+    {
+      "id": "SAAS-065",
+      "kind": "missing_fact",
+      "category": "missing_fact",
+      "question": "目前生产环境是否正在维护？",
+      "expected_title": null,
+      "retrieved": [
+        {
+          "title": "503 维护或服务暂不可用",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "d1b3033ad500e26e",
+          "excerpt": "出现 503 时，按提示确认是否处于计划维护窗口，并记录发生时间和请求 ID；也可能是服务负载或依赖异常。避免高频自动重试，使用退避策略并联系技术支持核实。不能凭静态知识库宣布当前正在维护。"
+        },
+        {
+          "title": "404 项目或任务不存在",
+          "source": "data/policies/saas_support_guide.md",
+          "chunk_id": "8b7a484ed49d647c",
+          "excerpt": "读取项目或任务返回 404 时，先确认资源 ID、所属企业和环境是否正确，再检查资源是否已被删除或归档。为避免暴露其他企业资源，未授权访问也可能统一显示不可用；单凭 404 不能断定资源不存在。不要向未经验证的用户披露项目名称或任务内容。"
+        }
+      ],
+      "review_required": true
+    }
+  ],
+  "corpus_sha256": "df613c51f15b04697813b075413902528536f7ccfb1338678ddc9a7823da3282",
+  "cases_sha256": "1086a0d13117e6a07a1778aa20c71ce314ebffcdb22c3275adf629a49982d574",
+  "method": "hybrid",
+  "chunk_count": 33
+}

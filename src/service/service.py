@@ -1,13 +1,16 @@
 import inspect
 import json
 import logging
+import os
+import time
 import warnings
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from datetime import UTC, datetime
 from typing import Annotated, Any
 from uuid import UUID, uuid4
 
-from fastapi import APIRouter, Depends, FastAPI, HTTPException, Query, status
+from fastapi import APIRouter, Depends, FastAPI, Header, HTTPException, Query, status
 from fastapi.responses import StreamingResponse
 from fastapi.routing import APIRoute
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -40,6 +43,7 @@ from service.utils import (
     langchain_to_chat_message,
     remove_tool_calls,
 )
+from technical_support.inspector_api import router as inspector_router
 
 warnings.filterwarnings("ignore", category=LangChainBetaWarning)
 logger = logging.getLogger(__name__)
@@ -60,7 +64,7 @@ def _format_interrupt(value: Any) -> str:
 
     actions = value["action_requests"]
     descriptions = [
-        f"- `{action['name']}`：{json.dumps(action['args'], ensure_ascii=False)}"
+        f"- `{action['name']}`：{json.dumps({k: v for k, v in action['args'].items() if k != 'access_code'}, ensure_ascii=False)}"
         for action in actions
     ]
     return (
@@ -86,7 +90,9 @@ def _hitl_resume_value(message: str, value: Any) -> Any:
             decisions.append(
                 {
                     "type": "reject",
-                    "message": "用户未明确确认或已取消，本次写操作未执行。",
+                    "message": message
+                    if message.startswith("审批已超时")
+                    else "用户未明确确认或已取消，本次写操作未执行。",
                 }
             )
     return {"decisions": decisions}
@@ -178,7 +184,26 @@ async def _handle_input(user_input: UserInput, agent: AgentGraph) -> tuple[dict[
     thread_id = user_input.thread_id or str(uuid4())
     user_id = user_input.user_id or str(uuid4())
 
-    configurable = {"thread_id": thread_id, "user_id": user_id}
+    from technical_support import profile
+    from technical_support.trace import emit
+
+    token = user_input.agent_config.get("profile_token")
+    owner = None
+    try:
+        if token:
+            owner = profile.authenticate(token)
+        bound_owner = profile.thread_owner(thread_id)
+        if bound_owner and bound_owner != owner:
+            raise ValueError("当前会话需要所属记忆空间的访问凭证")
+    except ValueError as error:
+        raise HTTPException(403, str(error)) from error
+    configurable = {
+        "thread_id": thread_id,
+        "user_id": user_id,
+        "trace_id": str(run_id),
+        "_memory_owner": owner,
+        "_request_started": time.time(),
+    }
     if user_input.model is not None:
         configurable["model"] = user_input.model
 
@@ -191,13 +216,22 @@ async def _handle_input(user_input: UserInput, agent: AgentGraph) -> tuple[dict[
 
     if user_input.agent_config:
         # Check for reserved keys (including 'model' even if not in configurable)
-        reserved_keys = {"thread_id", "user_id", "model"}
+        reserved_keys = {
+            "thread_id",
+            "user_id",
+            "model",
+            "trace_id",
+            "_memory_owner",
+            "_request_started",
+        }
         if overlap := reserved_keys & user_input.agent_config.keys():
             raise HTTPException(
                 status_code=422,
                 detail=f"agent_config contains reserved keys: {overlap}",
             )
-        configurable.update(user_input.agent_config)
+        configurable.update(
+            {k: v for k, v in user_input.agent_config.items() if k != "profile_token"}
+        )
 
     config = RunnableConfig(
         configurable=configurable,
@@ -207,6 +241,21 @@ async def _handle_input(user_input: UserInput, agent: AgentGraph) -> tuple[dict[
 
     # Check for interrupts that need to be resumed
     state = await agent.aget_state(config=config)
+    if owner:
+        try:
+            profile.claim_thread(
+                owner, thread_id, existing=bool(getattr(state, "values", {}).get("messages"))
+            )
+        except ValueError as error:
+            raise HTTPException(403, str(error)) from error
+    emit(
+        "request",
+        trace_id=str(run_id),
+        span_id=str(run_id),
+        parent_span_id=None,
+        thread_id=thread_id,
+        status="started",
+    )
     interrupted_tasks = [
         task for task in state.tasks if hasattr(task, "interrupts") and task.interrupts
     ]
@@ -215,7 +264,14 @@ async def _handle_input(user_input: UserInput, agent: AgentGraph) -> tuple[dict[
     if interrupted_tasks:
         # assume user input is response to resume agent execution from interrupt
         interrupt_value = interrupted_tasks[0].interrupts[0].value
-        input = Command(resume=_hitl_resume_value(user_input.message, interrupt_value))
+        decision_text = user_input.message
+        created_at = getattr(state, "created_at", None)
+        if isinstance(created_at, str) and _is_hitl_request(interrupt_value):
+            age = (datetime.now(UTC) - datetime.fromisoformat(created_at)).total_seconds()
+            if age > int(os.getenv("SAAS_APPROVAL_TTL_SECONDS", "900")):
+                decision_text = "审批已超时，请重新提交工单草稿"
+        emit("approval", trace_id=str(run_id), thread_id=thread_id, decision=decision_text)
+        input = Command(resume=_hitl_resume_value(decision_text, interrupt_value))
     else:
         input = {"messages": [HumanMessage(content=user_input.message)]}
 
@@ -431,6 +487,32 @@ async def stream(user_input: StreamInput, agent_id: str = DEFAULT_AGENT) -> Stre
     )
 
 
+@router.post("/saas/feedback")
+async def saas_feedback(feedback: Feedback) -> FeedbackResponse:
+    """Persist rating metadata locally; never store arbitrary user text or credentials."""
+    from contextlib import closing
+
+    from technical_support.store import _connect, initialize_database
+
+    try:
+        UUID(feedback.run_id)
+    except ValueError:
+        raise HTTPException(status_code=422, detail="Invalid run ID") from None
+    if not 0 <= feedback.score <= 1:
+        raise HTTPException(status_code=422, detail="Score must be in [0, 1]")
+    initialize_database()
+    with closing(_connect()) as connection:
+        connection.execute(
+            "CREATE TABLE IF NOT EXISTS feedback (run_id TEXT PRIMARY KEY, score REAL NOT NULL, created_at TEXT NOT NULL)"
+        )
+        connection.execute(
+            "INSERT INTO feedback VALUES (?, ?, ?) ON CONFLICT(run_id) DO UPDATE SET score=excluded.score, created_at=excluded.created_at",
+            (feedback.run_id, feedback.score, datetime.now(UTC).isoformat()),
+        )
+        connection.commit()
+    return FeedbackResponse()
+
+
 @router.post("/feedback")
 async def feedback(feedback: Feedback) -> FeedbackResponse:
     """
@@ -452,11 +534,22 @@ async def feedback(feedback: Feedback) -> FeedbackResponse:
 
 
 @router.post("/history")
-async def history(input: ChatHistoryInput) -> ChatHistory:
+async def history(
+    input: ChatHistoryInput, x_saas_token: Annotated[str | None, Header()] = None
+) -> ChatHistory:
     """
     Get chat history.
     """
     # TODO: Hard-coding DEFAULT_AGENT here is wonky
+    from technical_support import profile
+
+    bound = profile.thread_owner(input.thread_id)
+    if bound:
+        try:
+            if profile.authenticate(x_saas_token) != bound:
+                raise ValueError("会话不属于此记忆空间")
+        except ValueError as error:
+            raise HTTPException(403, str(error)) from error
     agent: AgentGraph = get_agent(DEFAULT_AGENT)
     try:
         state_snapshot = await agent.aget_state(
@@ -527,4 +620,5 @@ def database_table_rows(
         raise HTTPException(status_code=404, detail=str(error)) from error
 
 
+router.include_router(inspector_router)
 app.include_router(router)

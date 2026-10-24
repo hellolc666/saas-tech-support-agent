@@ -1,118 +1,75 @@
-# 电商智能客服与工单协同 Agent
+# SaaS 智能技术支持 Agent
 
-一个面向电商客服场景的 AI 应用工程项目，覆盖政策问答、订单查询、退款资格判断和
-人工工单协同。项目基于 LangGraph、FastAPI、Qwen、Chroma 与 MySQL 构建，并重点
-验证 RAG 效果、工具调用可靠性、写操作安全和容器化交付。
+面向虚构“星河协作平台”的本地演示项目：中文知识问答、应用配额与请求日志查询、导出条件诊断、人工确认后创建工单。沿用 LangGraph + Qwen + FastAPI + Streamlit，SaaS 业务数据与会话检查点使用 SQLite。
 
-> 项目用于本地学习、测试和作品展示，未在真实生产环境上线，也不包含真实客户数据。
+## 启动
 
-## 项目亮点
+在项目根目录配置 `.env` 的 `DASHSCOPE_API_KEY`、`DASHSCOPE_BASE_URL`、`DASHSCOPE_MODEL`，设置 `CUSTOMER_SUPPORT_MODE=qwen`。示例见 `.env.qwen.example`，不要提交真实密钥。
 
-- 使用 LangGraph 和 Qwen Function Calling 编排政策检索、订单查询、退款判断、工单创建
-  4 类工具，支持多轮对话、Checkpoint、Human-in-the-loop 确认与中断恢复。
-- 构建覆盖 16 类电商政策的 BGE + Chroma 混合 RAG，融合词法检索和向量检索，并加入
-  相关度拒答机制。
-- 在 72 条分层评测用例上，hybrid Hit@1 为 93.75%、Hit@3 为 100%、MRR@3 为
-  96.61%，8 条越界问题全部正确拒答，P95 检索延迟为 13.47 ms。
-- 将 99,441 笔 Olist 匿名公开订单和 112,650 条订单明细迁移至 MySQL，使用外键、索引、
-  批量写入与源文件 SHA-256 实现可重复、幂等的数据迁移。
-- 对订单查询统一身份校验失败响应；工单写入同时使用 HITL 和幂等键，降低越权查询与
-  重复写入风险。
-- 使用 Docker Compose 编排 MySQL、一次性数据迁移、FastAPI、Streamlit 和只读数据库
-  浏览器 5 个组件。
+```powershell
+# 本机运行
+uv sync --frozen
+powershell -ExecutionPolicy Bypass -File scripts/start_demo.ps1
+# 或启动 Docker Desktop 后运行容器
+ docker compose -f compose.saas.yaml up -d --build
+```
+
+打开 http://127.0.0.1:8501 ，API 为 http://127.0.0.1:8080 。端口冲突时设置 `SAAS_API_PORT` / `SAAS_UI_PORT` 再运行 Compose。首次知识检索会下载 BGE embedding 模型，需要网络；模型和索引缓存保存在命名卷中。
+
+```powershell
+docker compose -f compose.saas.yaml logs --tail 60 agent_service
+docker compose -f compose.saas.yaml stop
+docker compose -f compose.saas.yaml start
+```
+
+停止容器不会删除数据；不要对需要保留的数据卷使用 `down -v`。`SAAS_ONLY=1` 限制服务注册为 SaaS 入口，`customer-support` 是兼容别名。
 
 ## 架构
 
 ```mermaid
 flowchart LR
-    U["用户 / Streamlit"] --> API["FastAPI + SSE"]
-    API --> G["LangGraph Agent"]
-    G --> LLM["Qwen"]
-    G --> RAG["政策 RAG"]
-    G --> TOOLS["订单 / 退款 / 工单工具"]
-    RAG --> BGE["BGE Embedding"]
-    RAG --> CHROMA["Chroma"]
-    TOOLS --> MYSQL["MySQL"]
-    G --> CP["SQLite Checkpoint"]
+ UI[Streamlit] --> API[FastAPI / SSE]
+ API --> G[LangGraph + Qwen]
+ G --> R[BM25 + Dense + RRF + BGE Reranker]
+ R --> C[Chroma + BGE + Markdown]
+ G --> T[只读诊断工具]
+ T --> DB[(SQLite 演示业务库)]
+ G --> H[人工确认 / 取消 / 超时]
+ H --> W[幂等工单写入]
+ W --> DB
+ G <--> CP[(SQLite Checkpoint)]
+ G --> L[JSONL Trace]
+ UI --> F[本地评分]
+ F --> DB
 ```
 
-## 评测结果
+知识规则必须带文档来源；动态数据只来自业务工具。导出工具只诊断条件，不生成文件。工单写入先暂停等待确认，默认审批有效期 900 秒（`SAAS_APPROVAL_TTL_SECONDS`）；取消或超时不写入，恢复使用原会话 ID。数据库以租户和幂等键去重，相同键不同内容返回冲突。新的独立提交是新的工单请求。
 
-### RAG 检索
+Trace 位于 `data/logs/saas_trace.jsonl`（容器 `/app/runtime/saas_trace.jsonl`），包含会话 ID、意图、工具、耗时、状态、错误码和检索文档 ID；不记录工具参数或完整提示词。评分按运行 ID 存储到 SQLite，不依赖 LangSmith。模型最终工单成功声明需对应本轮工具返回编号，演示验证码会在最终文本中隐藏。SSE 输出完整校验后的答案，仍提供工具事件。
 
-| 方法 | Hit@1 | Hit@3 | MRR@3 | 越界拒答率 | P95 延迟 |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| lexical | 87.50% | 96.88% | 91.67% | 75.00% | 3.99 ms |
-| dense | 87.50% | 100.00% | 93.49% | 100.00% | 13.09 ms |
-| hybrid | **93.75%** | **100.00%** | **96.61%** | **100.00%** | 13.47 ms |
+## 当前检索链路
 
-评测集包含 64 条相关问题和 8 条越界问题，详细结果见
-[`data/evaluation/rag_report.json`](data/evaluation/rag_report.json)。这些指标来自项目构造的
-固定评测集，只代表本项目实验结果，不能外推为线上业务准确率。
+默认使用 **BM25＋BGE向量检索＋RRF（k=60）＋BAAI/bge-reranker-base**。先融合两路召回，过滤低相关证据，再对前15个候选交叉编码重排，返回前2条。模型实例在进程内复用，CPU并发访问串行化。模型不可用时明确报工具错误，不静默降级为Hybrid。首次使用需下载重排模型约1GB，CPU延迟会高于旧Hybrid。
 
-### Agent 业务验收
+## 演示与验收
 
-路由、退款规则、身份校验和工单幂等共 34 条确定性验收用例，当前为 34/34 通过。详细
-结果见 [`data/evaluation/agent_report.json`](data/evaluation/agent_report.json)。
+1. 问“API 返回401怎么办？”：检查检索工具与文档引用。
+2. 问“APP_DEMO_001 导出5001条失败，验证码 DEMO-ALPHA-4821”：应返回单次5000条限制。
+3. 新会话仅问“为什么导出5001条失败”：逐步补应用和验证码，检查多轮参数保持。
+4. 要求创建工单，给出应用、验证码、类别与故障摘要：确认前无写入；确认后返回真实编号，继续查询应为“待处理”。另开会话测试取消。
+5. 草稿产生后重启 API，保持原会话再确认，验证检查点恢复。等待超过审批有效期应拒绝旧草稿并要求重新提交。
+6. 用错误验证码查询配额：应拒绝，不返回其他应用数据。对答案评分后检查 SQLite feedback 表。
 
-## 快速开始
+合成身份：`APP_DEMO_001 / DEMO-ALPHA-4821`（2.0 编辑者）；`APP_DEMO_002 / DEMO-BETA-7394`（1.0 访客）。这些是公开演示数据，不是生产认证系统。当前不提供真实外部工单通知、生产配额查询、多租户账户管理。会话检查点保存对话，本地部署仍需保护数据库；应用验证码不能替代正式身份鉴权。
 
-Windows 用户可从 [`START_HERE.md`](START_HERE.md) 开始。默认使用离线 Mock Agent，
-不需要模型 API Key：
+## 复跑
 
 ```powershell
-.\scripts\setup_demo.cmd
-.\scripts\start_demo.cmd
+$env:PYTHONPATH='src'
+uv run pytest tests/technical_support tests/service/test_service.py tests/service/test_auth.py -q
+uv run python scripts/accept_saas_stage1.py
+uv run python scripts/accept_saas_stage2.py --base-url http://127.0.0.1:8080
+uv run python scripts/evaluate_saas_ablation.py
 ```
 
-浏览器访问 <http://127.0.0.1:8501>。
-
-运行项目相关测试与评测：
-
-```powershell
-.\scripts\run_tests.cmd
-.\scripts\evaluate_rag.cmd
-.\.venv\Scripts\python.exe scripts\evaluate_agent.py
-```
-
-切换至真实 Qwen Agent 时，仅在本地 `.env` 中填写 Key。可复制
-`.env.qwen.example`，不要将真实凭据提交到 Git。
-
-## Docker + MySQL
-
-完整部署需要 Docker Desktop。项目不会提交 Olist 原始数据或生成后的数据库，数据准备
-方式见 [`docs/data/olist-dataset.md`](docs/data/olist-dataset.md)。
-
-```powershell
-.\scripts\start_docker.cmd
-.\scripts\verify_docker.cmd
-.\scripts\verify_qwen_docker.cmd
-```
-
-详细说明见 [`docs/deployment/docker-mysql.md`](docs/deployment/docker-mysql.md)。
-
-## 主要目录
-
-```text
-src/customer_support/    RAG、业务规则、订单与工单数据访问
-src/agents/              LangGraph 客服 Agent 与工具路由
-src/service/             FastAPI、SSE、鉴权与就绪检查
-scripts/                 数据迁移、评测和部署验收脚本
-tests/customer_support/  客服场景单元测试
-data/evaluation/         固定评测集与结果
-data/policies/           示例政策知识库
-docs/                    数据、部署和问题排查记录
-```
-
-## 安全与边界
-
-- `.env`、数据库、原始数据、模型缓存、Chroma 数据和本地日志均被 Git 忽略。
-- Olist 数据为匿名公开数据；演示手机号后四位由匿名 ID 确定性生成，不是真实手机号。
-- API 支持 Bearer 鉴权，但本地 Compose 默认只绑定 `127.0.0.1`，未作为生产部署方案。
-- 当前尚未完成独立标注集验证、并发压测、线上监控和灾难恢复演练。
-
-## 上游项目与许可证
-
-本项目基于 Joshua Carroll 的
-[`JoshuaC215/agent-service-toolkit`](https://github.com/JoshuaC215/agent-service-toolkit)
-进行业务化二次开发。原项目及本项目继续遵循仓库中的 MIT License，并保留原版权声明。
+真实 Qwen 验收会产生模型调用费用。消融脚本会下载并运行 BGE reranker，CPU 运行较慢。实验与测试证据在 `data/evaluation/`，说明见 [阶段验收记录](docs/saas-acceptance.md) 和 [检索消融报告](docs/saas-retrieval.md)。原电商说明保留于 [历史 README](docs/legacy-ecommerce-readme.md)，原 `compose.yaml` 属于历史电商部署。

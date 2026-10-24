@@ -1,0 +1,401 @@
+[
+  {
+    "name": "context_seed",
+    "answer": "**结论：APP_DEMO_001 导出 100 条数据满足条件。**\n\n**证据：**\n1. **工具检查结果**（演示快照数据）：\n   - 应用版本：2.0\n   - 用户角色：编辑者\n   - 请求记录数：100\n   - 最大允许记录数：5000\n   - eligible: true（满足已知导出条件）\n\n2. **文档规则引用**：\n   - 来源：`data/policies/saas_support_guide.md > 导出失败与导出数量限制`\n     - 星河协作平台 2.0 单次最多导出 5000 条任务记录\n     - 访客无导出权限；管理员和编辑者可导出其有权访问的项目数据\n   - 来源：`data/policies/saas_support_guide.md > API 分页与结果数量`\n     - 演示版任务列表接口每页最多返回 100 条\n\n**下一步：**\n- 当前检查仅确认资格，不代表实际导出成功。\n- 若导出仍失败，请提供筛选条件、发生时间和请求 ID，我可进一步查询请求日志。\n\n任务进度：\n- 检查导出资格：已取得工具证据\n- 核对导出规则文档：已取得工具证据",
+    "rewrite": {
+      "at": "2026-10-24T04:56:23.062925+00:00",
+      "event": "rewrite",
+      "thread_id": "49c0002e-e107-40f7-9501-a686cf501a3c",
+      "trace_id": "01a16c44-4e7a-7cc2-b92a-633e178b3df3",
+      "span_id": "b22b3b5a834f40c6a483a89fccd78985",
+      "parent_span_id": "f03b34723aa24e11b8e35072f8e175aa",
+      "query": "APP_DEMO_001导出100条，演示验证码[hidden]，请检查导出条件",
+      "result": {
+        "independent_query": "检查APP_DEMO_001导出100条数据的条件",
+        "missing_information": [],
+        "clarification": "",
+        "tasks": [
+          {
+            "id": "check_export",
+            "title": "检查导出资格",
+            "tool": "check_export_eligibility",
+            "depends_on": [],
+            "query": "APP_DEMO_001导出100条数据资格检查",
+            "conditional": false
+          },
+          {
+            "id": "required_docs",
+            "title": "核对导出规则文档",
+            "tool": "search_technical_docs",
+            "depends_on": [],
+            "query": "检查APP_DEMO_001导出100条数据的条件",
+            "conditional": false
+          }
+        ]
+      },
+      "usage": {
+        "input_tokens": 500,
+        "output_tokens": 122,
+        "total_tokens": 622,
+        "input_token_details": {
+          "cache_read": 0
+        },
+        "output_token_details": {}
+      }
+    },
+    "tasks": [
+      {
+        "id": "check_export",
+        "title": "检查导出资格",
+        "tool": "check_export_eligibility",
+        "depends_on": [],
+        "query": "APP_DEMO_001导出100条数据资格检查",
+        "conditional": false,
+        "status": "completed",
+        "error_code": null,
+        "evidence": [],
+        "ticket_id": null
+      },
+      {
+        "id": "required_docs",
+        "title": "核对导出规则文档",
+        "tool": "search_technical_docs",
+        "depends_on": [],
+        "query": "检查APP_DEMO_001导出100条数据的条件",
+        "conditional": false,
+        "status": "completed",
+        "error_code": null,
+        "evidence": [
+          "2428bb9eac146369",
+          "49c17f76d52cce94"
+        ],
+        "ticket_id": null
+      }
+    ],
+    "events": [
+      "agent_model",
+      "bge_rerank",
+      "bm25_retrieval",
+      "dense_retrieval",
+      "memory_context",
+      "model",
+      "model_usage",
+      "query_understanding",
+      "request",
+      "request_complete",
+      "rewrite",
+      "rrf_fusion",
+      "task_summary",
+      "tool",
+      "tool_execution"
+    ],
+    "elapsed_s": 34.55,
+    "passed": true
+  },
+  {
+    "name": "query_rewrite",
+    "answer": "**结论：APP_DEMO_001 导出 5001 条数据不满足条件。**\n\n**证据：**\n- **工具检查结果**（演示快照数据）：\n  - 应用版本：2.0\n  - 用户角色：编辑者\n  - 请求记录数：5001\n  - 最大允许记录数：5000\n  - eligible: false\n  - 原因：`EXPORT_LIMIT_EXCEEDED`（超过单次5000条限制）\n\n**规则引用：**\n- 来源：`data/policies/saas_support_guide.md > 导出失败与导出数量限制`\n  - 星河协作平台 2.0 单次最多导出 5000 条任务记录，超过时应按项目、日期或状态筛选后分批导出。\n\n**下一步：**\n- 请将导出任务拆分为每批不超过 5000 条，例如分两次导出（如 5000 + 1）。\n\n任务进度：\n- 检查5001条导出资格：已取得工具证据\n- 查询导出数量限制规则：尚未执行",
+    "rewrite": {
+      "at": "2026-10-24T04:56:59.037698+00:00",
+      "event": "rewrite",
+      "thread_id": "49c0002e-e107-40f7-9501-a686cf501a3c",
+      "trace_id": "01a16c44-d56d-78f3-b3e7-dcb7db838d94",
+      "span_id": "86637793402d403b969834d95e214bcb",
+      "parent_span_id": "15dde078ffca4df49af05a9eb3b10de9",
+      "query": "那5001条呢？",
+      "result": {
+        "independent_query": "APP_DEMO_001导出5001条数据是否满足条件",
+        "missing_information": [],
+        "clarification": "",
+        "tasks": [
+          {
+            "id": "check_export",
+            "title": "检查5001条导出资格",
+            "tool": "check_export_eligibility",
+            "depends_on": [],
+            "query": "APP_DEMO_001 5001条",
+            "conditional": false
+          },
+          {
+            "id": "search_docs",
+            "title": "查询导出数量限制规则",
+            "tool": "search_technical_docs",
+            "depends_on": [],
+            "query": "星河协作平台单次最大导出记录数限制",
+            "conditional": false
+          }
+        ]
+      },
+      "usage": {
+        "input_tokens": 862,
+        "output_tokens": 195,
+        "total_tokens": 1057,
+        "input_token_details": {
+          "cache_read": 0
+        },
+        "output_token_details": {}
+      }
+    },
+    "tasks": [
+      {
+        "id": "check_export",
+        "title": "检查5001条导出资格",
+        "tool": "check_export_eligibility",
+        "depends_on": [],
+        "query": "APP_DEMO_001 5001条",
+        "conditional": false,
+        "status": "completed",
+        "error_code": null,
+        "evidence": [],
+        "ticket_id": null
+      },
+      {
+        "id": "search_docs",
+        "title": "查询导出数量限制规则",
+        "tool": "search_technical_docs",
+        "depends_on": [],
+        "query": "星河协作平台单次最大导出记录数限制",
+        "conditional": false,
+        "status": "pending",
+        "missing": []
+      }
+    ],
+    "events": [
+      "agent_model",
+      "bge_rerank",
+      "bm25_retrieval",
+      "dense_retrieval",
+      "memory_context",
+      "model",
+      "model_usage",
+      "query_understanding",
+      "request",
+      "request_complete",
+      "rewrite",
+      "rrf_fusion",
+      "task_summary",
+      "tool",
+      "tool_execution"
+    ],
+    "elapsed_s": 17.38,
+    "passed": true
+  },
+  {
+    "name": "complex_diagnosis",
+    "answer": "**现象与结论：**\n\n1. **429 错误原因**：APP_DEMO_001 当前限流窗口配额已用尽（100/100），导致后续请求被限流返回 429。\n   - 证据：`get_api_usage` 返回 `used: 100, rate_limit: 100`\n   - 来源：演示快照数据，更新时间 2026-01-01T00:00:00+00:00\n\n2. **导出 5001 条失败原因**：超过单次导出上限 5000 条。\n   - 证据：`check_export_eligibility` 返回 `eligible: false, reasons: [\"EXPORT_LIMIT_EXCEEDED\"]`\n   - 规则引用：星河协作平台 2.0 单次最多导出 5000 条，需分批导出\n   - 来源：`data/policies/saas_support_guide.md > 导出失败与导出数量限制`\n\n**下一步建议：**\n- 429 问题：等待下一个限流窗口后再试，或降低请求频率\n- 导出问题：将 5001 条记录按项目/日期/状态筛选，分两批导出（如 3000 + 2001）\n\n以上两项均有明确原因和解决方案。若按上述方法操作后仍无法解决，请告知我创建工单。是否需要现在创建工单？\n\n任务进度：\n- 检查API配额状态：已取得工具证据\n- 诊断导出失败原因：已取得工具证据\n- 核对导出规则文档：已取得工具证据\n- 创建技术支持工单：等待补充信息或确认",
+    "rewrite": {
+      "at": "2026-10-24T04:57:18.832513+00:00",
+      "event": "rewrite",
+      "thread_id": "2df3c828-b651-474e-aacf-3b7bf8e65038",
+      "trace_id": "01a16c45-1952-7520-9737-d516b070d785",
+      "span_id": "0b81021c84014359a558d8387e3e6623",
+      "parent_span_id": "5ea5171e69b4414987ff658aabc35de7",
+      "query": "请查APP_DEMO_001为什么429，同时诊断导出5001条失败，验证码[hidden]；如果仍解决不了再创建工单。",
+      "result": {
+        "independent_query": "APP_DEMO_001 429错误原因及5001条数据导出失败诊断",
+        "missing_information": [],
+        "clarification": "",
+        "tasks": [
+          {
+            "id": "check_quota",
+            "title": "检查API配额状态",
+            "tool": "get_api_usage",
+            "depends_on": [],
+            "query": "APP_DEMO_001",
+            "conditional": false
+          },
+          {
+            "id": "check_export",
+            "title": "诊断导出失败原因",
+            "tool": "check_export_eligibility",
+            "depends_on": [],
+            "query": "APP_DEMO_001 5001条",
+            "conditional": false
+          },
+          {
+            "id": "required_docs",
+            "title": "核对导出规则文档",
+            "tool": "search_technical_docs",
+            "depends_on": [],
+            "query": "APP_DEMO_001 429错误原因及5001条数据导出失败诊断",
+            "conditional": false
+          },
+          {
+            "id": "create_ticket",
+            "title": "创建技术支持工单",
+            "tool": "create_technical_ticket",
+            "depends_on": [
+              "check_quota",
+              "check_export",
+              "required_docs"
+            ],
+            "query": "APP_DEMO_001 429及导出失败问题未解决",
+            "conditional": true
+          }
+        ]
+      },
+      "usage": {
+        "input_tokens": 516,
+        "output_tokens": 282,
+        "total_tokens": 798,
+        "input_token_details": {
+          "cache_read": 0
+        },
+        "output_token_details": {}
+      }
+    },
+    "tasks": [
+      {
+        "id": "check_quota",
+        "title": "检查API配额状态",
+        "tool": "get_api_usage",
+        "depends_on": [],
+        "query": "APP_DEMO_001",
+        "conditional": false,
+        "status": "completed",
+        "error_code": null,
+        "evidence": [],
+        "ticket_id": null
+      },
+      {
+        "id": "check_export",
+        "title": "诊断导出失败原因",
+        "tool": "check_export_eligibility",
+        "depends_on": [],
+        "query": "APP_DEMO_001 5001条",
+        "conditional": false,
+        "status": "completed",
+        "error_code": null,
+        "evidence": [],
+        "ticket_id": null
+      },
+      {
+        "id": "required_docs",
+        "title": "核对导出规则文档",
+        "tool": "search_technical_docs",
+        "depends_on": [],
+        "query": "APP_DEMO_001 429错误原因及5001条数据导出失败诊断",
+        "conditional": false,
+        "status": "completed",
+        "error_code": null,
+        "evidence": [
+          "574eab5cc60f0852",
+          "49c17f76d52cce94"
+        ],
+        "ticket_id": null
+      },
+      {
+        "id": "create_ticket",
+        "title": "创建技术支持工单",
+        "tool": "create_technical_ticket",
+        "depends_on": [
+          "check_quota",
+          "check_export",
+          "required_docs"
+        ],
+        "query": "APP_DEMO_001 429及导出失败问题未解决",
+        "conditional": true,
+        "status": "waiting_input",
+        "missing": [
+          "请确认排查后仍未解决并需要创建工单"
+        ]
+      }
+    ],
+    "events": [
+      "agent_model",
+      "bge_rerank",
+      "bm25_retrieval",
+      "dense_retrieval",
+      "memory_context",
+      "model",
+      "model_usage",
+      "query_understanding",
+      "request",
+      "request_complete",
+      "rewrite",
+      "rrf_fusion",
+      "task_summary",
+      "tool",
+      "tool_execution"
+    ],
+    "elapsed_s": 24.88,
+    "passed": true
+  },
+  {
+    "name": "new_thread_memory",
+    "answer": "**结论：** API 返回 401 通常由令牌过期、环境不匹配或认证头错误导致。\n\n**排查步骤：**\n1. **检查令牌状态**：确认访问令牌（Token）是否已过期，以及是否属于当前调用的环境。\n2. **验证请求头**：检查认证请求头（如 `Authorization`）格式是否正确。\n3. **重新登录/更新令牌**：通过管理员提供的正式渠道重新登录或更新令牌。**注意：** 严禁将完整令牌粘贴到聊天窗口或工单中。\n4. **提供脱敏信息**：若更新后仍报 401，请记录并提供以下信息以便进一步排查：\n   - 产品版本\n   - 接口路径\n   - 发生时间\n   - 脱敏后的错误信息\n\n**来源：** `data/policies/saas_support_guide.md > 401 登录失效与令牌过期`",
+    "rewrite": {
+      "at": "2026-10-24T04:57:39.912733+00:00",
+      "event": "rewrite",
+      "thread_id": "0aa563e0-5eb4-4cb4-a898-b279753041da",
+      "trace_id": "01a16c45-7a78-7092-8629-421f74b47b60",
+      "span_id": "0aa5f15dfaba4a75bf1d6c6278647f93",
+      "parent_span_id": "72395a65d52546ff9baf14a5837d6041",
+      "query": "API返回401如何排查？",
+      "result": {
+        "independent_query": "API返回401如何排查",
+        "missing_information": [],
+        "clarification": "",
+        "tasks": [
+          {
+            "id": "docs_401",
+            "title": "401错误排查指南",
+            "tool": "search_technical_docs",
+            "depends_on": [],
+            "query": "API返回401 Unauthorized 排查步骤 令牌过期 权限不足",
+            "conditional": false
+          }
+        ]
+      },
+      "usage": {
+        "input_tokens": 464,
+        "output_tokens": 120,
+        "total_tokens": 584,
+        "input_token_details": {
+          "cache_read": 0
+        },
+        "output_token_details": {}
+      }
+    },
+    "tasks": [
+      {
+        "id": "docs_401",
+        "title": "401错误排查指南",
+        "tool": "search_technical_docs",
+        "depends_on": [],
+        "query": "API返回401 Unauthorized 排查步骤 令牌过期 权限不足",
+        "conditional": false,
+        "status": "completed",
+        "error_code": null,
+        "evidence": [
+          "c1dab4f0c08f590c",
+          "8f896256b1070bac"
+        ],
+        "ticket_id": null
+      }
+    ],
+    "events": [
+      "agent_model",
+      "bge_rerank",
+      "bm25_retrieval",
+      "dense_retrieval",
+      "memory_context",
+      "model",
+      "model_usage",
+      "query_understanding",
+      "request",
+      "request_complete",
+      "rewrite",
+      "rrf_fusion",
+      "task_summary",
+      "tool",
+      "tool_execution"
+    ],
+    "elapsed_s": 16.92,
+    "passed": true
+  },
+  {
+    "name": "cross_profile_denied",
+    "passed": true
+  }
+]

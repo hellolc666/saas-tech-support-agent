@@ -95,6 +95,7 @@ async def main() -> None:
             st.markdown("The service might be booting up. Try again in a few seconds.")
             st.stop()
     agent_client: AgentClient = st.session_state.agent_client
+    agent_client.profile_token = st.session_state.get("support_token")
 
     # Initialize voice manager (once per session)
     if "voice_manager" not in st.session_state:
@@ -117,6 +118,9 @@ async def main() -> None:
 
     # Config options
     with st.sidebar:
+        if agent_client.agent in {"saas-support", "customer-support"}:
+            from client.support_panel import panel
+            panel(agent_client)
         st.header(f"{APP_ICON} {APP_TITLE}")
 
         ""
@@ -126,6 +130,7 @@ async def main() -> None:
         if st.button(":material/chat: New Chat", use_container_width=True):
             st.session_state.messages = []
             st.session_state.thread_id = str(uuid.uuid4())
+            st.query_params.pop("thread_id", None)
             # Clear saved audio when starting new chat
             if "last_audio" in st.session_state:
                 del st.session_state.last_audio
@@ -216,11 +221,11 @@ async def main() -> None:
 
     if len(messages) == 0:
         match agent_client.agent:
-            case "customer-support":
+            case "customer-support" | "saas-support":
                 WELCOME = """你好！我是星河协作平台技术支持助手。
-                我可以检索报错、权限、部署、版本和导出文档，并提供来源。
+                我可以检索技术文档、查询演示应用配额和请求记录，并在你确认后创建技术工单。
                 你可以先试试：访问项目出现403无权限，如何排查？
-                当前提供知识问答；技术工单功能尚未接入。"""
+                演示应用 APP_DEMO_001 的验证码为 DEMO-ALPHA-4821；仅用于本地模拟数据。"""
             case "chatbot":
                 WELCOME = "Hello! I'm a simple chatbot. Ask me anything!"
             case "interrupt-agent":

@@ -1,0 +1,45 @@
+services:
+  agent_service:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.service
+    env_file: .env
+    environment:
+      SAAS_ONLY: "1"
+      HOST: 0.0.0.0
+      PORT: 8080
+      DATABASE_TYPE: sqlite
+      SQLITE_DB_PATH: /app/runtime/checkpoints.db
+      SAAS_SUPPORT_DB_PATH: /app/runtime/saas.db
+      SAAS_TRACE_PATH: /app/runtime/saas_trace.jsonl
+      BUSINESS_DATABASE_TYPE: sqlite
+      NO_PROXY: localhost,127.0.0.1,agent_service
+    ports: ["127.0.0.1:${SAAS_API_PORT:-8080}:8080"]
+    volumes:
+      - saas_runtime:/app/runtime
+      - saas_chroma:/app/data/chroma
+      - saas_models:/app/data/models
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health',timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
+  streamlit_app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.app
+    env_file: .env
+    environment:
+      AGENT_URL: http://agent_service:8080
+      NO_PROXY: localhost,127.0.0.1,agent_service
+    ports: ["127.0.0.1:${SAAS_UI_PORT:-8501}:8501"]
+    depends_on:
+      agent_service:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  saas_runtime:
+  saas_chroma:
+  saas_models:
+

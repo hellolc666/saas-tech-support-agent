@@ -1,0 +1,89 @@
+[
+  {
+    "name": "401 knowledge",
+    "passed": true,
+    "answers": [
+      "API 接口返回 401 通常表示**认证失败**或**令牌过期**。根据文档建议，请按以下步骤排查：\n\n1.  **检查访问令牌（Token）**：确认 API 调用中使用的访问令牌是否已过期，或是否属于当前正确的环境。\n2.  **验证请求头**：检查认证请求头（如 `Authorization`）的格式和内容是否正确。\n3.  **重新获取令牌**：使用管理员提供的正式渠道更新或重新生成访问令牌。**注意**：请勿将完整的令牌粘贴到聊天窗口或工单中。\n4.  **重试操作**：更新令牌后，重新发起 API 请求。\n\n如果更新令牌后仍然出现 401 错误，请记录以下信息并联系技术支持：\n*   产品版本\n*   接口路径\n*   发生时间\n*   脱敏后的错误信息\n\n来源：`data/policies/saas_support_guide.md > 401 登录失效与令牌过期`"
+    ],
+    "tool_names": [
+      "search_technical_docs"
+    ],
+    "tool_results": [
+      "{\"found\": true, \"references\": [{\"title\": \"401 登录失效与令牌过期\", \"content\": \"接口返回 401 或“登录已失效”时，先重新登录；API 调用者应确认访问令牌是否过期、是否属于当前环境以及认证请求头是否正确。使用管理员提供的正式渠道更新令牌，不要把完整令牌粘贴到聊天或工单中。更新后仍出现 401 时，提供产品版本、接口路径、发生时间和脱敏后的错误信息。\", \"source\": \"data/policies/saas_support_guide.md\", \"chunk_id\": \"c1dab4f0c08f590c\", \"score\": 0.1818, \"dense_rank\": 1, \"dense_relevance\": 0.6931, \"lexical_rank\": 1, \"lexical_score\": 0.5}, {\"title\": \"403 无权限访问项目\", \"content\": \"访问项目出现 403 或“无权限”时，先确认当前登录账号和所属企业，再请项目管理员检查账号是否加入该项目、角色是否允许当前操作。访客仅能查看，编辑操作需要编辑者或管理员权限。权限调整后退出并重新登录再试。仍然出现 403 时，记录项目标识、发生时间和请求 ID，提交技术支持；不要通过公开项目或关闭鉴权来绕过权限检查。\", \"source\": \"data/policies/saas_support_guide.md\", \"chunk_id\": \"6c05bc75622134ba\", \"score\": 0.092, \"dense_rank\": 2, \"dense_relevance\": 0.6443, \"lexical_rank\": 13, \"lexical_score\": 0.1}]}"
+    ],
+    "elapsed_s": 33.3
+  },
+  {
+    "name": "5001 export",
+    "passed": true,
+    "answers": [
+      "根据检查结果，APP_DEMO_001 导出 5001 条记录失败的原因是：\n\n**超过单次导出限制**\n- 当前应用版本：2.0\n- 用户角色：编辑者\n- 请求记录数：5001 条\n- 最大允许记录数：5000 条\n- 失败原因：`EXPORT_LIMIT_EXCEEDED`\n\n**解决方案：**\n需要筛选后分批导出，每次不超过 5000 条。可以按项目、日期或状态等条件进行筛选。\n\n**来源：** `data/policies/saas_support_guide.md > 导出失败与导出数量限制`\n\n注意：这是演示环境的固定快照数据（非实时生产监控），工具仅检查导出条件是否符合规则，不代表实际文件已生成。"
+    ],
+    "tool_names": [
+      "check_export_eligibility",
+      "search_technical_docs"
+    ],
+    "tool_results": [
+      "{\"ok\": true, \"app_id\": \"APP_DEMO_001\", \"version\": \"2.0\", \"role\": \"编辑者\", \"record_count\": 5001, \"max_records\": 5000, \"eligible\": false, \"reasons\": [\"EXPORT_LIMIT_EXCEEDED\"], \"is_demo_snapshot\": true, \"message\": \"超过单次5000条限制，请筛选后分批导出\"}",
+      "{\"found\": true, \"references\": [{\"title\": \"导出失败与导出数量限制\", \"content\": \"星河协作平台 2.0 单次最多导出 5000 条任务记录，超过时应按项目、日期或状态筛选后分批导出。访客无导出权限；管理员和编辑者可导出其有权访问的项目数据。数据量未超限且权限正确但仍导出失败时，应提供筛选条件、记录数量、发生时间和请求 ID。助手不得宣称已生成或下载文件，除非工具确认成功。\", \"source\": \"data/policies/saas_support_guide.md\", \"chunk_id\": \"49c17f76d52cce94\", \"score\": 0.1818, \"dense_rank\": 1, \"dense_relevance\": 0.6892, \"lexical_rank\": 1, \"lexical_score\": 0.6923}, {\"title\": \"附件上传失败\", \"content\": \"演示版单个任务附件不能超过 20 MB；超限时应压缩或拆分文件。若文件未超限，检查上传权限、网络连接和文件格式，并记录错误码与请求 ID。当前知识库不保证所有文件格式都支持；未知格式应先核对产品版本文档。\", \"source\": \"data/policies/saas_support_guide.md\", \"chunk_id\": \"7c543a30bccb67d7\", \"score\": 0.1227, \"dense_rank\": 4, \"dense_relevance\": 0.6215, \"lexical_rank\": 2, \"lexical_score\": 0.3077}]}"
+    ],
+    "elapsed_s": 10.59
+  },
+  {
+    "name": "multi-turn export",
+    "passed": true,
+    "answers": [
+      "为了诊断导出失败的具体原因，我需要先了解您的演示应用信息。请提供以下必要参数：\n\n1. **app_id**（演示应用 ID）\n2. **access_code**（该应用的演示验证码）\n\n此外，您提到的记录数量是 **5001** 条吗？如果是，请确认。\n\n收到这些信息后，我将调用工具检查导出资格，并检索相关的导出规则文档为您分析原因。",
+      "根据文档，星河协作平台 2.0 **单次最多导出 5000 条**任务记录。您尝试导出 5001 条，超过了单次限制，这很可能是导致失败的原因。\n\n来源：`data/policies/saas_support_guide.md > 导出失败与导出数量限制`\n\n为了进一步确认您的应用版本、角色权限以及具体的导出资格状态，我还需要您提供：\n\n**access_code**（该应用的演示验证码）\n\n请提供验证码，我将调用工具为您进行详细诊断。",
+      "诊断结果如下：\n\n*   **应用版本**：2.0\n*   **用户角色**：编辑者（具备导出权限）\n*   **请求记录数**：5001 条\n*   **单次最大限制**：5000 条\n*   **导出资格**：**不合格 (eligible: false)**\n*   **失败原因**：`EXPORT_LIMIT_EXCEEDED`（超过单次 5000 条限制）\n\n**结论**：\n您的导出失败是因为尝试导出的记录数量（5001 条）超过了平台规定的单次上限（5000 条）。\n\n**建议**：\n请通过筛选项目、日期或状态等方式，将每次导出的记录数控制在 5000 条以内，然后分批进行导出。\n\n来源：`data/policies/saas_support_guide.md > 导出失败与导出数量限制`\n\n*注：以上数据为固定演示快照，不代表实时生产环境状态。*"
+    ],
+    "tool_names": [
+      "search_technical_docs",
+      "search_technical_docs",
+      "check_export_eligibility"
+    ],
+    "tool_results": [
+      "{\"found\": true, \"references\": [{\"title\": \"导出失败与导出数量限制\", \"content\": \"星河协作平台 2.0 单次最多导出 5000 条任务记录，超过时应按项目、日期或状态筛选后分批导出。访客无导出权限；管理员和编辑者可导出其有权访问的项目数据。数据量未超限且权限正确但仍导出失败时，应提供筛选条件、记录数量、发生时间和请求 ID。助手不得宣称已生成或下载文件，除非工具确认成功。\", \"source\": \"data/policies/saas_support_guide.md\", \"chunk_id\": \"49c17f76d52cce94\", \"score\": 0.1717, \"dense_rank\": 1, \"dense_relevance\": 0.6165, \"lexical_rank\": 1, \"lexical_score\": 0.4444}, {\"title\": \"CSV 任务导入失败\", \"content\": \"导入任务 CSV 失败时，核对 UTF-8 编码、列名、必填字段和日期格式，并先用少量脱敏数据复现。若部分行失败，保存失败行及错误原因后修正再导入，避免把整份文件重复导入。当前知识库没有模板下载地址，助手不能编造下载链接。\", \"source\": \"data/policies/saas_support_guide.md\", \"chunk_id\": \"da1f3cbbffda9b98\", \"score\": 0.0944, \"dense_rank\": 2, \"dense_relevance\": 0.5639, \"lexical_rank\": 10, \"lexical_score\": 0.1111}]}",
+      "{\"found\": true, \"references\": [{\"title\": \"版本兼容与批量导出\", \"content\": \"本演示产品中，批量导出功能从星河协作平台 2.0 版本开始提供，1.0 版本不支持批量导出。2.0 的 API 客户端应配套使用 2.0 的接口文档；不能直接假设 1.0 的请求参数仍然有效。用户询问功能不可用时，应先确认产品版本与角色，再判断是否属于版本不支持或权限不足。\", \"source\": \"data/policies/saas_support_guide.md\", \"chunk_id\": \"88b4cc863fa704e0\", \"score\": 0.1534, \"dense_rank\": 1, \"dense_relevance\": 0.6257, \"lexical_rank\": 2, \"lexical_score\": 0.375}, {\"title\": \"导出失败与导出数量限制\", \"content\": \"星河协作平台 2.0 单次最多导出 5000 条任务记录，超过时应按项目、日期或状态筛选后分批导出。访客无导出权限；管理员和编辑者可导出其有权访问的项目数据。数据量未超限且权限正确但仍导出失败时，应提供筛选条件、记录数量、发生时间和请求 ID。助手不得宣称已生成或下载文件，除非工具确认成功。\", \"source\": \"data/policies/saas_support_guide.md\", \"chunk_id\": \"49c17f76d52cce94\", \"score\": 0.1291, \"dense_rank\": 4, \"dense_relevance\": 0.5381, \"lexical_rank\": 3, \"lexical_score\": 0.375}]}",
+      "{\"ok\": true, \"app_id\": \"APP_DEMO_001\", \"version\": \"2.0\", \"role\": \"编辑者\", \"record_count\": 5001, \"max_records\": 5000, \"eligible\": false, \"reasons\": [\"EXPORT_LIMIT_EXCEEDED\"], \"is_demo_snapshot\": true, \"message\": \"超过单次5000条限制，请筛选后分批导出\"}"
+    ],
+    "elapsed_s": 22.69
+  },
+  {
+    "name": "identity denial",
+    "passed": true,
+    "answers": [
+      "查询失败，返回错误：应用不存在或演示验证码不匹配。\n\n请确认：\n1. app_id 是否正确（APP_DEMO_001）\n2. 演示验证码 [演示验证码已隐藏] 是否对应该应用\n\n如果信息无误，可能是该应用在演示环境中不存在或验证码已过期。"
+    ],
+    "tool_names": [
+      "get_api_usage"
+    ],
+    "tool_results": [
+      "{\"ok\": false, \"error_code\": \"APP_NOT_FOUND_OR_VERIFICATION_FAILED\", \"error\": \"应用不存在或演示验证码不匹配。\"}"
+    ],
+    "elapsed_s": 8.8
+  },
+  {
+    "name": "version and permission",
+    "passed": true,
+    "answers": [
+      "根据诊断结果，APP_DEMO_002 无法导出100条记录的原因如下：\n\n**诊断结果：**\n- **应用版本**：1.0\n- **当前角色**：访客\n- **记录数量**：100（未超过5000条上限）\n- **eligible**: false\n\n**失败原因：**\n1. **VERSION_UNSUPPORTED** - 当前版本不支持批量导出\n2. **EXPORT_PERMISSION_DENIED** - 当前角色或资源权限不允许导出\n\n**规则引用来源：** `data/policies/saas_support_guide.md > 导出失败与导出数量限制`\n\n根据文档规定：\n- 访客无导出权限\n- 管理员和编辑者可导出其有权访问的项目数据\n- 星河协作平台 2.0 单次最多导出 5000 条任务记录\n\n**结论：** 您的应用是 1.0 版本且当前角色为\"访客\"，这两个条件都导致无法导出。需要升级到支持导出的版本，并获取具有导出权限的角色（管理员或编辑者）。\n\n注意：这是演示快照数据，不是实时生产环境状态。"
+    ],
+    "tool_names": [
+      "check_export_eligibility",
+      "search_technical_docs"
+    ],
+    "tool_results": [
+      "{\"ok\": true, \"app_id\": \"APP_DEMO_002\", \"version\": \"1.0\", \"role\": \"访客\", \"record_count\": 100, \"max_records\": 5000, \"eligible\": false, \"reasons\": [\"VERSION_UNSUPPORTED\", \"EXPORT_PERMISSION_DENIED\"], \"is_demo_snapshot\": true, \"message\": \"当前版本不支持批量导出；当前角色或资源权限不允许导出\"}",
+      "{\"found\": true, \"references\": [{\"title\": \"导出失败与导出数量限制\", \"content\": \"星河协作平台 2.0 单次最多导出 5000 条任务记录，超过时应按项目、日期或状态筛选后分批导出。访客无导出权限；管理员和编辑者可导出其有权访问的项目数据。数据量未超限且权限正确但仍导出失败时，应提供筛选条件、记录数量、发生时间和请求 ID。助手不得宣称已生成或下载文件，除非工具确认成功。\", \"source\": \"data/policies/saas_support_guide.md\", \"chunk_id\": \"49c17f76d52cce94\", \"score\": 0.1818, \"dense_rank\": 1, \"dense_relevance\": 0.6847, \"lexical_rank\": 1, \"lexical_score\": 0.7273}, {\"title\": \"附件上传失败\", \"content\": \"演示版单个任务附件不能超过 20 MB；超限时应压缩或拆分文件。若文件未超限，检查上传权限、网络连接和文件格式，并记录错误码与请求 ID。当前知识库不保证所有文件格式都支持；未知格式应先核对产品版本文档。\", \"source\": \"data/policies/saas_support_guide.md\", \"chunk_id\": \"7c543a30bccb67d7\", \"score\": 0.1223, \"dense_rank\": 2, \"dense_relevance\": 0.6482, \"lexical_rank\": 4, \"lexical_score\": 0.2727}]}"
+    ],
+    "elapsed_s": 11.33
+  },
+  {
+    "name": "SSE Qwen retrieval",
+    "passed": true,
+    "event_types": [
+      "message"
+    ]
+  }
+]

@@ -6,8 +6,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-#POLICY_PATH = Path("data/policies/customer_service_policy.md")
+# POLICY_PATH = Path("data/policies/customer_service_policy.md")
 POLICY_PATH = Path("data/policies/saas_support_guide.md")
+
 
 @dataclass(frozen=True)
 class PolicySection:
@@ -52,9 +53,9 @@ def load_policy_sections(path: Path = POLICY_PATH) -> list[PolicySection]:
 def search_policy(query: str) -> dict[str, Any]:
     """Search the persistent vector knowledge base and return the best cited hit."""
     # Local import prevents loading Chroma/FastEmbed when only parsing documents.
-    from customer_support.rag import get_policy_knowledge_base
+    from technical_support.retrieval import get_support_retriever
 
-    hits = get_policy_knowledge_base().search(query, top_k=2, method="hybrid")
+    hits = get_support_retriever().search(query, top_k=2, method="rerank")
     if not hits:
         return {
             "title": "未检索到相关政策",

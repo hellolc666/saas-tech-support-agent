@@ -1,3 +1,4 @@
+import os
 from dataclasses import dataclass
 
 from langgraph.graph.state import CompiledStateGraph
@@ -6,7 +7,6 @@ from langgraph.pregel import Pregel
 from agents.bg_task_agent.bg_task_agent import bg_task_agent
 from agents.chatbot import chatbot
 from agents.command_agent import command_agent
-from agents.saas_support_agent import saas_support_agent as customer_support_agent
 from agents.github_mcp_agent.github_mcp_agent import github_mcp_agent
 from agents.interrupt_agent import interrupt_agent
 from agents.knowledge_base_agent import kb_agent
@@ -15,9 +15,10 @@ from agents.langgraph_supervisor_hierarchy_agent import langgraph_supervisor_hie
 from agents.lazy_agent import LazyLoadingAgent
 from agents.rag_assistant import rag_assistant
 from agents.research_assistant import research_assistant
+from agents.saas_support_agent import saas_support_agent as customer_support_agent
 from schema import AgentInfo
 
-DEFAULT_AGENT = "customer-support"
+DEFAULT_AGENT = "saas-support"
 
 # Type alias to handle LangGraph's different agent patterns
 # - @entrypoint functions return Pregel
@@ -33,6 +34,10 @@ class Agent:
 
 
 agents: dict[str, Agent] = {
+    "saas-support": Agent(
+        description="SaaS technical support with documents, business diagnostics and approved tickets.",
+        graph_like=customer_support_agent,
+    ),
     "customer-support": Agent(
         description="SaaS technical support with cited documents and offline fallback (read-only).",
         graph_like=customer_support_agent,
@@ -67,6 +72,12 @@ agents: dict[str, Agent] = {
         graph_like=github_mcp_agent,
     ),
 }
+
+
+if os.getenv("SAAS_ONLY") == "1":
+    agents = {
+        key: value for key, value in agents.items() if key in {"saas-support", "customer-support"}
+    }
 
 
 async def load_agent(agent_id: str) -> None:

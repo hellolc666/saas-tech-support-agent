@@ -1,4 +1,8 @@
+$env:SAAS_ONLY = "1"
 $ErrorActionPreference = "Stop"
+
+# Local service traffic must bypass any system HTTP proxy.
+$env:NO_PROXY = (@($env:NO_PROXY, "127.0.0.1", "localhost", "0.0.0.0") | Where-Object { $_ }) -join ","
 
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
 Set-Location $ProjectRoot

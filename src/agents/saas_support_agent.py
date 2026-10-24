@@ -34,15 +34,20 @@ class SaaSSupportAgent(LazyLoadingAgent):
                 model=settings.DASHSCOPE_MODEL,
                 temperature=0,
                 streaming=True,
+                tags=["skip_stream"],
                 timeout=60,
                 max_retries=2,
                 extra_body={"enable_thinking": False},
             )
-            self._graph = build_technical_support_graph(model)
-            logger.info("SaaS support mode: Qwen (read-only document tools)")
+            self._graph = build_technical_support_graph(
+                model, planner=model.bind(response_format={"type": "json_object"})
+            )
+            logger.info("SaaS support mode: Qwen (documents, diagnostics and approved tickets)")
         else:
             self._graph = build_technical_support_mock()
-            logger.info("SaaS support mode: offline mock (document excerpts)")
+            logger.info(
+                "SaaS support mode: offline mock (documents and deterministic business workflow)"
+            )
         self._loaded = True
 
 

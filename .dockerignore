@@ -11,3 +11,9 @@ venv
 .venv
 *.db
 privatecredentials/*
+
+data/models/
+data/chroma/
+data/logs/
+data/evaluation/
+.pytest_cache/

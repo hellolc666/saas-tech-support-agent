@@ -1,0 +1,64 @@
+{
+  "case_count": 6,
+  "scope": "Six fixed contextual retrieval examples; not end-to-end answer accuracy.",
+  "original_hit_at_5": 0.16666666666666666,
+  "rewritten_hit_at_5": 1.0,
+  "original_mrr_at_5": 0.08333333333333333,
+  "rewritten_mrr_at_5": 1.0,
+  "details": [
+    {
+      "context": "APP_DEMO_001导出失败",
+      "query": "那5001条呢？",
+      "rewritten": "APP_DEMO_001导出5001条记录失败",
+      "expected_title": "导出失败与导出数量限制",
+      "original_rank": null,
+      "rewritten_rank": 1,
+      "elapsed_s": 13.31
+    },
+    {
+      "context": "接口返回401，提示令牌过期",
+      "query": "这个怎么恢复？",
+      "rewritten": "API返回401令牌过期如何恢复",
+      "expected_title": "401 登录失效与令牌过期",
+      "original_rank": null,
+      "rewritten_rank": 1,
+      "elapsed_s": 9.52
+    },
+    {
+      "context": "Webhook签名校验失败",
+      "query": "该怎么核对？",
+      "rewritten": "Webhook签名校验失败如何核对",
+      "expected_title": "Webhook 签名校验",
+      "original_rank": null,
+      "rewritten_rank": 1,
+      "elapsed_s": 7.12
+    },
+    {
+      "context": "CSV任务导入提示格式错误",
+      "query": "应该检查哪些列？",
+      "rewritten": "CSV任务导入格式错误检查哪些列",
+      "expected_title": "CSV 任务导入失败",
+      "original_rank": null,
+      "rewritten_rank": 1,
+      "elapsed_s": 6.92
+    },
+    {
+      "context": "应用请求返回429",
+      "query": "要等多久才能重试？",
+      "rewritten": "应用请求返回429错误，需要等待多久才能重试",
+      "expected_title": "429 请求过多与配额",
+      "original_rank": null,
+      "rewritten_rank": 1,
+      "elapsed_s": 6.93
+    },
+    {
+      "context": "成员邀请链接已经失效",
+      "query": "能重新发送吗？",
+      "rewritten": "成员邀请链接失效后如何重新发送",
+      "expected_title": "成员邀请与邀请失效",
+      "original_rank": 2,
+      "rewritten_rank": 1,
+      "elapsed_s": 8.68
+    }
+  ]
+}

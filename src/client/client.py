@@ -55,6 +55,8 @@ class AgentClient:
         headers = {}
         if self.auth_secret:
             headers["Authorization"] = f"Bearer {self.auth_secret}"
+        if getattr(self, "profile_token", None):
+            headers["X-SaaS-Token"] = self.profile_token
         return headers
 
     def retrieve_info(self) -> None:
@@ -107,12 +109,14 @@ class AgentClient:
         if not self.agent:
             raise AgentClientError("No agent selected. Use update_agent() to select an agent.")
         request = UserInput(message=message)
+        if getattr(self, "profile_token", None):
+            request.agent_config["profile_token"] = self.profile_token
         if thread_id:
             request.thread_id = thread_id
         if model:
             request.model = model  # type: ignore[assignment]
         if agent_config:
-            request.agent_config = agent_config
+            request.agent_config.update(agent_config)
         if user_id:
             request.user_id = user_id
         async with httpx.AsyncClient() as client:
@@ -153,12 +157,14 @@ class AgentClient:
         if not self.agent:
             raise AgentClientError("No agent selected. Use update_agent() to select an agent.")
         request = UserInput(message=message)
+        if getattr(self, "profile_token", None):
+            request.agent_config["profile_token"] = self.profile_token
         if thread_id:
             request.thread_id = thread_id
         if model:
             request.model = model  # type: ignore[assignment]
         if agent_config:
-            request.agent_config = agent_config
+            request.agent_config.update(agent_config)
         if user_id:
             request.user_id = user_id
         try:
@@ -230,6 +236,8 @@ class AgentClient:
         if not self.agent:
             raise AgentClientError("No agent selected. Use update_agent() to select an agent.")
         request = StreamInput(message=message, stream_tokens=stream_tokens)
+        if getattr(self, "profile_token", None):
+            request.agent_config["profile_token"] = self.profile_token
         if thread_id:
             request.thread_id = thread_id
         if user_id:
@@ -237,7 +245,7 @@ class AgentClient:
         if model:
             request.model = model  # type: ignore[assignment]
         if agent_config:
-            request.agent_config = agent_config
+            request.agent_config.update(agent_config)
         try:
             with httpx.stream(
                 "POST",
@@ -287,12 +295,14 @@ class AgentClient:
         if not self.agent:
             raise AgentClientError("No agent selected. Use update_agent() to select an agent.")
         request = StreamInput(message=message, stream_tokens=stream_tokens)
+        if getattr(self, "profile_token", None):
+            request.agent_config["profile_token"] = self.profile_token
         if thread_id:
             request.thread_id = thread_id
         if model:
             request.model = model  # type: ignore[assignment]
         if agent_config:
-            request.agent_config = agent_config
+            request.agent_config.update(agent_config)
         if user_id:
             request.user_id = user_id
         async with httpx.AsyncClient() as client:
@@ -330,7 +340,9 @@ class AgentClient:
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.post(
-                    f"{self.base_url}/feedback",
+                    f"{self.base_url}/saas/feedback"
+                    if self.agent in {"saas-support", "customer-support"}
+                    else f"{self.base_url}/feedback",
                     json=request.model_dump(),
                     headers=self._headers,
                     timeout=self.timeout,

@@ -1,0 +1,16 @@
+[
+  {
+    "decision": "approve",
+    "passed": true,
+    "restart_recovered": true,
+    "ticket_count_change": 1,
+    "answer": "工单创建成功！\n\n**工单编号：** ST-3C8AFFE566  \n**状态：** 待处理  \n**应用：** APP_DEMO_001  \n**类别：** 接口异常  \n**摘要：** 测试验收持续429-2d09ad21  \n\n该工单已提交，当前状态为\"待处理\"。这不是重复工单。"
+  },
+  {
+    "decision": "reject",
+    "passed": true,
+    "restart_recovered": true,
+    "ticket_count_change": 0,
+    "answer": "工单创建已被您拒绝，因此未提交。\n\n如果您确认要创建此工单，请明确告知我\"确认创建\"或类似表述，我将重新提交。"
+  }
+]
