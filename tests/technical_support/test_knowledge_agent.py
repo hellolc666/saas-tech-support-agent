@@ -58,6 +58,7 @@ def test_business_tools_are_registered_without_ecommerce_actions():
     assert [tool.name for tool in agent.TECHNICAL_SUPPORT_TOOLS] == [
         "search_technical_docs", "get_api_usage", "get_request_log", "check_export_eligibility",
         "create_technical_ticket", "get_ticket_status",
+        "list_incident_scenarios", "get_incident_evidence",
     ]
 
 

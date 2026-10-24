@@ -7,6 +7,10 @@ from uuid import uuid4
 
 from langchain_core.tools import tool
 
+from technical_support.incident_scenarios import (
+    get_incident_evidence,
+    list_incident_scenarios,
+)
 from technical_support.store import (
     check_export_eligibility,
     create_technical_ticket,
@@ -71,7 +75,30 @@ def check_export_eligibility_tool(app_id: str, access_code: str, record_count: i
     return check_export_eligibility(app_id, access_code, record_count)
 
 
+@tool("list_incident_scenarios")
+def list_incident_scenarios_tool(app_id: str, access_code: str) -> dict:
+    """List synthetic historical incident IDs for a verified demo application.
+
+    Returns metadata, never the offline benchmark ground-truth root-cause labels.
+    """
+    return list_incident_scenarios(app_id, access_code)
+
+
+@tool("get_incident_evidence")
+def get_incident_evidence_tool(
+    incident_id: str, app_id: str, access_code: str, view: str = "overview",
+) -> dict:
+    """Investigate a synthetic SaaS incident via one evidence dimension at a time.
+
+    Start with view='overview'. Then select traffic/auth/export/dependency
+    based on the observed error and symptom. An ID like F01 is a synthetic
+    historical case, NOT an active production incident. Never request a real key.
+    """
+    return get_incident_evidence(incident_id, app_id, access_code, view)
+
+
 TECHNICAL_DATA_TOOLS = [
     get_api_usage_tool, get_request_log_tool, check_export_eligibility_tool,
     create_technical_ticket_tool, get_ticket_status_tool,
+    list_incident_scenarios_tool, get_incident_evidence_tool,
 ]
