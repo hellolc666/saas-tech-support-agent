@@ -1,7 +1,7 @@
-"""Evidence-driven incident triage without looking at evaluation answer labels.
+"""Evidence-driven synthetic incident diagnosis (no offline labels in inference).
 
-The inference rules form a reproducible *baseline*, not a general LLM judge.
-They operate on two incident evidence observations returned by authenticated tools.
+The deterministic reasoner is an inspectable baseline, not an LLM evaluator.
+It compares competing hypotheses and abstains on insufficient/conflicting evidence.
 """
 
 from __future__ import annotations
@@ -26,9 +26,17 @@ CAUSES = {
     "DOWNSTREAM_DEPENDENCY_DEGRADED": ("下游依赖异常导致服务变慢", "检查模拟依赖指标及超时、降级和重试策略"),
 }
 
+# These are *candidate* causes for a symptom, not the offline ground truth.
+CANDIDATES_BY_VIEW = {
+    "traffic": ("QUOTA_EXHAUSTED", "BURST_RATE_LIMIT"),
+    "auth": ("TOKEN_EXPIRED", "CREDENTIAL_ENV_MISMATCH"),
+    "export": ("VERSION_UNSUPPORTED", "RESOURCE_PERMISSION_DENIED", "EXPORT_COUNT_LIMIT"),
+    "dependency": ("DOWNSTREAM_DEPENDENCY_DEGRADED",),
+}
+
 
 def _json_tool_payload(message: Any) -> dict[str, Any] | None:
-    """Accept LangChain ToolMessage duck-typed values for isolated unit testing."""
+    """Parse a successful evidence observation from a LangChain ToolMessage."""
     if getattr(message, "name", None) != "get_incident_evidence":
         return None
     try:
@@ -53,22 +61,83 @@ def collected_views(messages: list[Any], incident_id: str | None) -> dict[str, d
 
 
 def detail_for_overview(overview: dict[str, Any]) -> str | None:
-    """Choose next evidence dimension *from observed symptom*, not case ID."""
+    """Choose evidence from symptom, not from incident ID or answer labels."""
     if overview.get("category") == "export":
         return "export"
     return REQUIRED_DETAIL.get(overview.get("http_status"))
 
 
+def hypotheses_for_overview(overview: dict[str, Any]) -> list[dict[str, str]]:
+    """Construct competing hypotheses without reading the hidden answer key."""
+    view = detail_for_overview(overview)
+    return [
+        {"root_cause": code, "reason": CAUSES[code][0], "status": "unverified"}
+        for code in CANDIDATES_BY_VIEW.get(view, ())
+    ]
+
+
 def next_evidence_view(views: dict[str, dict[str, Any]]) -> str | None:
-    """Return the next required dimension or None when sufficient evidence exists."""
+    """Select the next needed view; stop once required evidence is present."""
     if "overview" not in views:
         return "overview"
     detail = detail_for_overview(views["overview"].get("evidence", {}))
     return detail if detail and detail not in views else None
 
 
+def _number(evidence: dict[str, Any], key: str) -> float | int | None:
+    value = evidence.get(key)
+    # A missing field, boolean or malformed number is not negative evidence.
+    return value if type(value) in (float, int) else None
+
+
+def _compare(evidence: dict[str, Any], left: str, right: str, op: str) -> bool | None:
+    a, b = _number(evidence, left), _number(evidence, right)
+    if a is None or b is None:
+        return None
+    return a >= b if op == ">=" else a > b
+
+
+def _test_hypothesis(code: str, evidence: dict[str, Any]) -> tuple[bool | None, list[str]]:
+    """Return (supported/rejected/unknown, consulted field names)."""
+    if code == "QUOTA_EXHAUSTED":
+        return _compare(evidence, "window_used", "window_limit", ">="), ["window_used", "window_limit"]
+    if code == "BURST_RATE_LIMIT":
+        return _compare(evidence, "peak_rps", "rps_limit", ">"), ["peak_rps", "rps_limit"]
+    if code == "TOKEN_EXPIRED":
+        v = evidence.get("token_expired")
+        return (v if type(v) is bool else None), ["token_expired"]
+    if code == "CREDENTIAL_ENV_MISMATCH":
+        fields = ["credential_environment", "request_environment"]
+        a, b = (evidence.get(k) for k in fields)
+        if not all(isinstance(x, str) and x for x in (a, b)):
+            return None, fields
+        return a != b, fields
+    if code == "VERSION_UNSUPPORTED":
+        v = evidence.get("version")
+        return (v != "2.0" if isinstance(v, str) and v else None), ["version"]
+    if code == "RESOURCE_PERMISSION_DENIED":
+        fields = ["resource_access", "role"]
+        access, role = (evidence.get(k) for k in fields)
+        if type(access) is not bool or not isinstance(role, str) or not role:
+            return None, fields
+        return (not access or role not in {"管理员", "编辑者"}), fields
+    if code == "EXPORT_COUNT_LIMIT":
+        return _compare(evidence, "requested_records", "max_records", ">"), ["requested_records", "max_records"]
+    if code == "DOWNSTREAM_DEPENDENCY_DEGRADED":
+        fields = ["downstream_p95_ms", "downstream_error_rate"]
+        p95, rate = (_number(evidence, key) for key in fields)
+        if p95 is None or rate is None:
+            return None, fields
+        return p95 > 2000 and rate > 0.2, fields
+    raise ValueError(f"Unknown cause: {code}")
+
+
 def assess(views: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
-    """Infer cause from observations, returning None until relevant evidence is read."""
+    """Evaluate competing causes using one incident's authenticated observations.
+
+    Returns None while collecting evidence. Returns UNDETERMINED for incomplete
+    evidence or CONFLICTING_EVIDENCE when multiple causes are simultaneously supported.
+    """
     if "overview" not in views:
         return None
     overview = views["overview"]
@@ -80,35 +149,46 @@ def assess(views: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
             or details.get("app_id") != overview.get("app_id")):
         return None
     evidence = details["evidence"]
-    cause = None
-    if detail_view == "traffic":
-        if evidence.get("window_used", 0) >= evidence.get("window_limit", float("inf")):
-            cause = "QUOTA_EXHAUSTED"
-        elif evidence.get("peak_rps", 0) > evidence.get("rps_limit", float("inf")):
-            cause = "BURST_RATE_LIMIT"
-    elif detail_view == "auth":
-        if evidence.get("token_expired") is True:
-            cause = "TOKEN_EXPIRED"
-        elif evidence.get("credential_environment") != evidence.get("request_environment"):
-            cause = "CREDENTIAL_ENV_MISMATCH"
-    elif detail_view == "export":
-        if evidence.get("version") != "2.0":
-            cause = "VERSION_UNSUPPORTED"
-        elif not evidence.get("resource_access") or evidence.get("role") not in {"管理员", "编辑者"}:
-            cause = "RESOURCE_PERMISSION_DENIED"
-        elif evidence.get("requested_records", 0) > evidence.get("max_records", float("inf")):
-            cause = "EXPORT_COUNT_LIMIT"
-    elif detail_view == "dependency":
-        if (evidence.get("downstream_p95_ms", 0) > 2000
-                and evidence.get("downstream_error_rate", 0) > 0.2):
-            cause = "DOWNSTREAM_DEPENDENCY_DEGRADED"
-    label, remediation = CAUSES.get(cause, ("现有证据不足以确定根因", "请求人工排查或补充其他维度数据"))
+    candidates = CANDIDATES_BY_VIEW.get(detail_view, ())
+    hypotheses = []
+    supported = []
+    unknown = []
+    for code in candidates:
+        value, fields = _test_hypothesis(code, evidence)
+        status = "supported" if value is True else "rejected" if value is False else "unknown"
+        hypotheses.append({
+            "root_cause": code,
+            "reason": CAUSES[code][0],
+            "status": status,
+            "evidence_fields": fields,
+        })
+        if value is True:
+            supported.append(code)
+        elif value is None:
+            unknown.append(code)
+    if len(supported) > 1:
+        root = "CONFLICTING_EVIDENCE"
+        reason = "多项根因假设同时得到支持，无法唯一定位根因"
+        next_step = "核对异常证据或补充可区分的观测"
+        verdict = "conflicting"
+    elif len(supported) == 1 and not unknown:
+        root = supported[0]
+        reason, next_step = CAUSES[root]
+        verdict = "supported"
+    else:
+        root = "UNDETERMINED"
+        reason = "现有证据不足以唯一确定根因"
+        next_step = "补充缺失或可区分的诊断证据，必要时请求人工排查"
+        verdict = "insufficient"
     return {
         "incident_id": overview["incident_id"],
-        "root_cause": cause or "UNDETERMINED",
-        "reason": label,
-        "next_step": remediation,
+        "root_cause": root,
+        "reason": reason,
+        "next_step": next_step,
+        "verdict": verdict,
+        "hypotheses": hypotheses,
         "evidence_views": ["overview", detail_view],
         "evidence": {detail_view: evidence},
+        "observed_at": overview.get("observed_at"),
         "is_demo_snapshot": True,
     }
