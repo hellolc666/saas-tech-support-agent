@@ -223,7 +223,7 @@ async def report_tool_failure(request, handler):
             messages = (request.state or {}).get("messages", [])
             turn_index = sum(isinstance(m, HumanMessage) for m in messages)
             fingerprint = hashlib.sha256(
-                f"{config.get('thread_id', '')}:{turn_index}:{call_id}".encode("utf-8")
+                f"{config.get('thread_id', '')}:{turn_index}:{call_id}".encode()
             ).hexdigest()
             args = dict(request.tool_call["args"])
             # Overwrite any model-supplied submission_id: it is server-owned.
@@ -275,10 +275,14 @@ async def report_tool_failure(request, handler):
         )
 
 
-def build_technical_support_graph(model: BaseChatModel, planner=None) -> CompiledStateGraph:
+def build_technical_support_graph(
+    model: BaseChatModel, planner=None, memory_extractor=None
+) -> CompiledStateGraph:
     from technical_support.workflow import SupportWorkflow
 
-    workflow = [SupportWorkflow(planner)] if planner is not None else []
+    workflow = (
+        [SupportWorkflow(planner, memory_extractor=memory_extractor)] if planner is not None else []
+    )
     return create_agent(
         model=model,
         tools=TECHNICAL_SUPPORT_TOOLS,

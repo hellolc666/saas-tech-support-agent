@@ -44,9 +44,20 @@ from service.utils import (
     remove_tool_calls,
 )
 from technical_support.inspector_api import router as inspector_router
+from technical_support.trace import redact
 
 warnings.filterwarnings("ignore", category=LangChainBetaWarning)
 logger = logging.getLogger(__name__)
+
+
+def _safe_saas_message(message: ChatMessage) -> ChatMessage:
+    """Keep checkpoint data intact while hiding tool credentials in the API view."""
+    safe = message.model_copy(deep=True)
+    if safe.tool_calls:
+        safe.tool_calls = redact(safe.tool_calls)
+    if safe.type == "tool":
+        safe.content = redact(safe.content)
+    return safe
 
 
 def _is_hitl_request(value: Any) -> bool:
@@ -190,11 +201,15 @@ async def _handle_input(user_input: UserInput, agent: AgentGraph) -> tuple[dict[
     token = user_input.agent_config.get("profile_token")
     owner = None
     try:
+        if os.getenv("SAAS_ONLY") == "1" and not token:
+            raise HTTPException(401, "需要记忆空间访问凭证")
         if token:
             owner = profile.authenticate(token)
         bound_owner = profile.thread_owner(thread_id)
         if bound_owner and bound_owner != owner:
             raise ValueError("当前会话需要所属记忆空间的访问凭证")
+        if bound_owner and profile.conversation_deleted(thread_id):
+            raise ValueError("该会话已删除")
     except ValueError as error:
         raise HTTPException(403, str(error)) from error
     configurable = {
@@ -246,6 +261,7 @@ async def _handle_input(user_input: UserInput, agent: AgentGraph) -> tuple[dict[
             profile.claim_thread(
                 owner, thread_id, existing=bool(getattr(state, "values", {}).get("messages"))
             )
+            profile.ensure_conversation(owner, thread_id, user_input.message)
         except ValueError as error:
             raise HTTPException(403, str(error)) from error
     emit(
@@ -321,6 +337,11 @@ async def invoke(user_input: UserInput, agent_id: str = DEFAULT_AGENT) -> ChatMe
             raise ValueError(f"No final values or interrupt event found: {event_types}")
 
         output.run_id = str(run_id)
+        owner = kwargs["config"]["configurable"].get("_memory_owner")
+        if owner:
+            from technical_support import profile
+
+            profile.touch_conversation(owner, kwargs["config"]["configurable"]["thread_id"])
         return output
     except Exception as e:
         logger.error(f"An exception occurred: {e}")
@@ -328,7 +349,9 @@ async def invoke(user_input: UserInput, agent_id: str = DEFAULT_AGENT) -> ChatMe
 
 
 async def message_generator(
-    user_input: StreamInput, agent_id: str = DEFAULT_AGENT
+    user_input: StreamInput,
+    agent_id: str = DEFAULT_AGENT,
+    prepared: tuple[dict[str, Any], UUID] | None = None,
 ) -> AsyncGenerator[str, None]:
     """
     Generate a stream of messages from the agent.
@@ -336,7 +359,7 @@ async def message_generator(
     This is the workhorse method for the /stream endpoint.
     """
     agent: AgentGraph = get_agent(agent_id)
-    kwargs, run_id = await _handle_input(user_input, agent)
+    kwargs, run_id = prepared if prepared is not None else await _handle_input(user_input, agent)
 
     try:
         # Process streamed events from the graph and yield messages over the SSE stream.
@@ -417,6 +440,8 @@ async def message_generator(
                 # LangGraph re-sends the input message, which feels weird, so drop it
                 if chat_message.type == "human" and chat_message.content == user_input.message:
                     continue
+                if agent_id in {"saas-support", "customer-support"}:
+                    chat_message = _safe_saas_message(chat_message)
                 yield f"data: {json.dumps({'type': 'message', 'content': chat_message.model_dump()})}\n\n"
 
             if stream_mode == "messages":
@@ -439,6 +464,11 @@ async def message_generator(
         logger.error(f"Error in message generator: {e}")
         yield f"data: {json.dumps({'type': 'error', 'content': 'Internal server error'})}\n\n"
     finally:
+        owner = kwargs["config"]["configurable"].get("_memory_owner")
+        if owner:
+            from technical_support import profile
+
+            profile.touch_conversation(owner, kwargs["config"]["configurable"]["thread_id"])
         yield "data: [DONE]\n\n"
 
 
@@ -481,8 +511,10 @@ async def stream(user_input: StreamInput, agent_id: str = DEFAULT_AGENT) -> Stre
 
     Set `stream_tokens=false` to return intermediate messages but not token-by-token.
     """
+    agent: AgentGraph = get_agent(agent_id)
+    prepared = await _handle_input(user_input, agent)
     return StreamingResponse(
-        message_generator(user_input, agent_id),
+        message_generator(user_input, agent_id, prepared),
         media_type="text/event-stream",
     )
 
@@ -544,12 +576,20 @@ async def history(
     from technical_support import profile
 
     bound = profile.thread_owner(input.thread_id)
+    if os.getenv("SAAS_ONLY") == "1":
+        if not x_saas_token:
+            raise HTTPException(401, "需要记忆空间访问凭证")
+        if not bound:
+            raise HTTPException(404, "此记忆空间中没有该会话")
     if bound:
         try:
             if profile.authenticate(x_saas_token) != bound:
                 raise ValueError("会话不属于此记忆空间")
+            if profile.conversation_deleted(input.thread_id):
+                raise ValueError("该会话已删除")
         except ValueError as error:
-            raise HTTPException(403, str(error)) from error
+            status_code = 404 if "删除" in str(error) else 403
+            raise HTTPException(status_code, str(error)) from error
     agent: AgentGraph = get_agent(DEFAULT_AGENT)
     try:
         state_snapshot = await agent.aget_state(
@@ -557,6 +597,8 @@ async def history(
         )
         messages: list[AnyMessage] = state_snapshot.values["messages"]
         chat_messages: list[ChatMessage] = [langchain_to_chat_message(m) for m in messages]
+        if bound:
+            chat_messages = [_safe_saas_message(message) for message in chat_messages]
         return ChatHistory(messages=chat_messages)
     except Exception as e:
         logger.error(f"An exception occurred: {e}")

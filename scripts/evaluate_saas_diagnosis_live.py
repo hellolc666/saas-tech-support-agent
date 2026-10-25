@@ -149,7 +149,9 @@ def analyze_events(case_id: str, events: list[dict], elapsed_s: float) -> dict:
     }
 
 
-def run_case(client: httpx.Client, base_url: str, agent: str, case_id: str, timeout: int) -> dict:
+def run_case(
+    client: httpx.Client, base_url: str, agent: str, case_id: str, timeout: int, profile_token: str
+) -> dict:
     app_id = SCENARIOS[case_id]["app_id"]
     prompt = (
         f"请诊断应用 {app_id} 的合成历史故障 {case_id}，"
@@ -162,7 +164,12 @@ def run_case(client: httpx.Client, base_url: str, agent: str, case_id: str, time
     try:
         with client.stream(
             "POST", f"{base_url.rstrip('/')}/{agent}/stream",
-            json={"message": prompt, "thread_id": str(uuid4()), "stream_tokens": False},
+            json={
+                "message": prompt,
+                "thread_id": str(uuid4()),
+                "stream_tokens": False,
+                "agent_config": {"profile_token": profile_token},
+            },
             timeout=httpx.Timeout(connect=15, read=timeout, write=20, pool=15),
         ) as response:
             response.raise_for_status()
@@ -223,10 +230,16 @@ def main() -> int:
         except httpx.HTTPError as error:
             print(f"Backend not reachable: {type(error).__name__}. Start FastAPI first.", file=sys.stderr)
             return 2
+        workspace = client.post(f"{args.base_url.rstrip('/')}/saas/workspace", timeout=8)
+        workspace.raise_for_status()
+        profile_token = workspace.json()["token"]
+        client.headers["X-SaaS-Token"] = profile_token
         details = []
         for case in case_ids:
             print(f"Running {case} (real Qwen API calls) ...", flush=True)
-            result = run_case(client, args.base_url, args.agent, case, args.timeout)
+            result = run_case(
+                client, args.base_url, args.agent, case, args.timeout, profile_token
+            )
             details.append(result)
             print(f"{case}: {result['judgment']} | path={result['evidence_path_ok']} | "
                   f"tools={len(result['tool_calls'])} | {result['duration_s']}s", flush=True)

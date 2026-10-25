@@ -1,0 +1,313 @@
+{
+  "scope": "Real SaaS Agent via FastAPI/SSE, 8 synthetic fixed cases; not production performance",
+  "created_at": "2026-10-24T08:51:51.680031+00:00",
+  "base_url": "http://127.0.0.1:8080",
+  "agent": "saas-support",
+  "metrics": {
+    "cases": 8,
+    "correct_strict": 8,
+    "strict_accuracy_lower_bound": 1.0,
+    "needs_manual_review": 0,
+    "incorrect": 0,
+    "errors": 0,
+    "evidence_path_rate": 1.0,
+    "mean_tool_calls": 2.12,
+    "latency_p50_s": 15.05,
+    "latency_p95_s": 20.35
+  },
+  "details": [
+    {
+      "case_id": "F01",
+      "expected_root_cause": "QUOTA_EXHAUSTED",
+      "predicted_root_cause": "QUOTA_EXHAUSTED",
+      "judgment": "correct",
+      "evidence_path_ok": true,
+      "tool_calls": [
+        {
+          "name": "get_incident_evidence",
+          "view": "overview"
+        },
+        {
+          "name": "get_incident_evidence",
+          "view": "traffic"
+        }
+      ],
+      "evidence_observations": [
+        {
+          "incident_id": "F01",
+          "app_id": "APP_DEMO_001",
+          "view": "overview",
+          "ok": true
+        },
+        {
+          "incident_id": "F01",
+          "app_id": "APP_DEMO_001",
+          "view": "traffic",
+          "ok": true
+        }
+      ],
+      "duration_s": 14.98,
+      "answer": "现在我已获取 traffic 视图的证据。让我分析候选根因：\n\n**候选根因核实：**\n\n1. **QUOTA_EXHAUSTED（时间窗口配额耗尽）**\n   - 证据：window_used = 100，window_limit = 100\n   - 分析：已使用配额等于配额上限，说明时间窗口内的配额已完全耗尽\n   - 状态：**supported**\n\n2. **BURST_RATE_LIMIT（瞬时请求速率超过限制）**\n   - 证据：peak_rps = 7，rps_limit = 20\n   - 分析：峰值请求速率 7 RPS 远低于限制 20 RPS，未超过瞬时速率限制\n   - 状态：**rejected**\n\n**结论：**\n- 现象：API 返回 429，错误码 RATE_LIMIT_EXCEEDED\n- 证据：traffic 视图显示 window_used=100, window_limit=100（配额耗尽）；peak_rps=7 < rps_limit=20（未超瞬时速率）\n- 根因：时间窗口配额耗尽（QUOTA_EXHAUSTED）\n- 下一步：等待下一配额窗口，检查配额或减少请求量\n\n根因代码：QUOTA_EXHAUSTED",
+      "sse_completed": true,
+      "errors": [],
+      "model_usage_metadata": null
+    },
+    {
+      "case_id": "F02",
+      "expected_root_cause": "BURST_RATE_LIMIT",
+      "predicted_root_cause": "BURST_RATE_LIMIT",
+      "judgment": "correct",
+      "evidence_path_ok": true,
+      "tool_calls": [
+        {
+          "name": "get_incident_evidence",
+          "view": "overview"
+        },
+        {
+          "name": "get_incident_evidence",
+          "view": "traffic"
+        }
+      ],
+      "evidence_observations": [
+        {
+          "incident_id": "F02",
+          "app_id": "APP_DEMO_001",
+          "view": "overview",
+          "ok": true
+        },
+        {
+          "incident_id": "F02",
+          "app_id": "APP_DEMO_001",
+          "view": "traffic",
+          "ok": true
+        }
+      ],
+      "duration_s": 15.05,
+      "answer": "已获取 traffic 证据。现在分析候选根因：\n\n**候选根因核实：**\n\n1. **QUOTA_EXHAUSTED（时间窗口配额耗尽）**：\n   - 证据：window_used=24，window_limit=100\n   - 分析：已使用配额 24 远低于限制 100，配额未耗尽\n   - 状态：**rejected**\n\n2. **BURST_RATE_LIMIT（瞬时请求速率超过限制）**：\n   - 证据：peak_rps=42，rps_limit=20\n   - 分析：峰值速率 42 RPS 超过限制 20 RPS，瞬时速率超标\n   - 状态：**supported**\n\n**结论：**\n- 现象：API 返回 429，错误码 RATE_LIMIT_EXCEEDED\n- 证据：traffic 视图显示 peak_rps=42 > rps_limit=20，但 window_used=24 < window_limit=100\n- 根因：瞬时请求速率超过限制（BURST_RATE_LIMIT），而非配额耗尽\n- 下一步：实施客户端限速、退避与抖动重试\n\n根因代码：BURST_RATE_LIMIT",
+      "sse_completed": true,
+      "errors": [],
+      "model_usage_metadata": null
+    },
+    {
+      "case_id": "F03",
+      "expected_root_cause": "RESOURCE_PERMISSION_DENIED",
+      "predicted_root_cause": "RESOURCE_PERMISSION_DENIED",
+      "judgment": "correct",
+      "evidence_path_ok": true,
+      "tool_calls": [
+        {
+          "name": "get_incident_evidence",
+          "view": "overview"
+        },
+        {
+          "name": "get_incident_evidence",
+          "view": "export"
+        }
+      ],
+      "evidence_observations": [
+        {
+          "incident_id": "F03",
+          "app_id": "APP_DEMO_001",
+          "view": "overview",
+          "ok": true
+        },
+        {
+          "incident_id": "F03",
+          "app_id": "APP_DEMO_001",
+          "view": "export",
+          "ok": true
+        }
+      ],
+      "duration_s": 16.96,
+      "answer": "已获取 export 视图证据。现在结合参考数据中的验证结果进行分析：\n\n**现象**：\n- 故障 ID：F03\n- 类别：export（导出）\n- 症状：数据导出失败\n- HTTP 状态码：403\n- 错误码：EXPORT_FAILED\n\n**证据（export 视图）**：\n- max_records: 5000（单次最大允许导出记录数）\n- requested_records: 100（请求导出记录数）\n- resource_access: false（当前资源无访问权限）\n- role: 编辑者\n- version: 2.0\n\n**候选根因核实**：\n\n1. **VERSION_UNSUPPORTED**（当前版本不支持批量导出）：\n   - 证据显示 version 为 2.0，requested_records=100 远小于 max_records=5000\n   - 该假设已被标记为 rejected，因为版本和记录数均不构成限制\n\n2. **RESOURCE_PERMISSION_DENIED**（当前资源缺少导出权限）：\n   - evidence 显示 resource_access: false，role 为\"编辑者\"\n   - 该假设被标记为 supported，因为资源访问权限为 false，直接导致 403 错误\n\n3. **EXPORT_COUNT_LIMIT**（导出记录数超过单次限制）：\n   - requested_records=100，max_records=5000，未超限\n   - 该假设已被标记为 rejected\n\n根据 verified_incident_diagnosis，verdict 为 supported，唯一确定的根因是 RESOURCE_PERMISSION_DENIED。\n\n**结论**：\n- 根因：当前资源缺少导出权限（resource_access=false）\n- 下一步：核实项目成员身份及资源授权\n\n根因代码：RESOURCE_PERMISSION_DENIED",
+      "sse_completed": true,
+      "errors": [],
+      "model_usage_metadata": null
+    },
+    {
+      "case_id": "F04",
+      "expected_root_cause": "EXPORT_COUNT_LIMIT",
+      "predicted_root_cause": "EXPORT_COUNT_LIMIT",
+      "judgment": "correct",
+      "evidence_path_ok": true,
+      "tool_calls": [
+        {
+          "name": "get_incident_evidence",
+          "view": "overview"
+        },
+        {
+          "name": "get_incident_evidence",
+          "view": "export"
+        }
+      ],
+      "evidence_observations": [
+        {
+          "incident_id": "F04",
+          "app_id": "APP_DEMO_001",
+          "view": "overview",
+          "ok": true
+        },
+        {
+          "incident_id": "F04",
+          "app_id": "APP_DEMO_001",
+          "view": "export",
+          "ok": true
+        }
+      ],
+      "duration_s": 15.45,
+      "answer": "已获取 export 视图证据。现在对候选根因逐一核实：\n\n**候选根因分析：**\n\n1. **VERSION_UNSUPPORTED（当前版本不支持批量导出）**\n   - 证据显示 version: \"2.0\"，resource_access: true\n   - 该假设状态为 rejected，因为版本 2.0 支持导出功能\n\n2. **RESOURCE_PERMISSION_DENIED（当前资源缺少导出权限）**\n   - 证据显示 resource_access: true，role: \"编辑者\"\n   - 该假设状态为 rejected，因为资源访问权限为 true，角色为编辑者具备导出权限\n\n3. **EXPORT_COUNT_LIMIT（导出记录数超过单次限制）**\n   - 证据显示 requested_records: 5001，max_records: 5000\n   - 请求记录数 5001 超过了最大限制 5000\n   - 该假设状态为 supported\n\n**结论：**\n- 现象：数据导出失败，HTTP 403，错误码 EXPORT_FAILED\n- 证据：export 视图显示请求记录数 5001 超过单次最大限制 5000，但资源访问权限正常，版本 2.0 支持导出\n- 根因：导出记录数超过单次限制\n- 下一步：使用筛选条件分批导出\n\n根因代码：EXPORT_COUNT_LIMIT",
+      "sse_completed": true,
+      "errors": [],
+      "model_usage_metadata": null
+    },
+    {
+      "case_id": "F05",
+      "expected_root_cause": "TOKEN_EXPIRED",
+      "predicted_root_cause": "TOKEN_EXPIRED",
+      "judgment": "correct",
+      "evidence_path_ok": true,
+      "tool_calls": [
+        {
+          "name": "get_incident_evidence",
+          "view": "overview"
+        },
+        {
+          "name": "get_incident_evidence",
+          "view": "auth"
+        }
+      ],
+      "evidence_observations": [
+        {
+          "incident_id": "F05",
+          "app_id": "APP_DEMO_002",
+          "view": "overview",
+          "ok": true
+        },
+        {
+          "incident_id": "F05",
+          "app_id": "APP_DEMO_002",
+          "view": "auth",
+          "ok": true
+        }
+      ],
+      "duration_s": 14.18,
+      "answer": "根据 auth 维度的证据：\n- `credential_environment`: \"test\"\n- `request_environment`: \"test\"\n- `token_expired`: true\n\n现在逐一核实候选根因：\n\n1. **TOKEN_EXPIRED**（访问令牌已过期）：证据显示 `token_expired: true`，支持此根因。\n2. **CREDENTIAL_ENV_MISMATCH**（请求环境与凭证环境不匹配）：证据显示 `credential_environment` 和 `request_environment` 均为 \"test\"，环境匹配，因此此根因被拒绝。\n\n结论：唯一支持的根因是 TOKEN_EXPIRED。\n\n现象：API 返回 401，错误码 AUTH_FAILED\n证据：auth 维度显示 token_expired 为 true，且凭证环境与请求环境一致（均为 test）\n结论：访问令牌已过期导致认证失败\n下一步：通过正规渠道刷新令牌，不上传密钥\n\n根因代码：TOKEN_EXPIRED",
+      "sse_completed": true,
+      "errors": [],
+      "model_usage_metadata": null
+    },
+    {
+      "case_id": "F06",
+      "expected_root_cause": "CREDENTIAL_ENV_MISMATCH",
+      "predicted_root_cause": "CREDENTIAL_ENV_MISMATCH",
+      "judgment": "correct",
+      "evidence_path_ok": true,
+      "tool_calls": [
+        {
+          "name": "get_incident_evidence",
+          "view": "overview"
+        },
+        {
+          "name": "get_incident_evidence",
+          "view": "auth"
+        }
+      ],
+      "evidence_observations": [
+        {
+          "incident_id": "F06",
+          "app_id": "APP_DEMO_002",
+          "view": "overview",
+          "ok": true
+        },
+        {
+          "incident_id": "F06",
+          "app_id": "APP_DEMO_002",
+          "view": "auth",
+          "ok": true
+        }
+      ],
+      "duration_s": 13.33,
+      "answer": "根据 auth 维度的证据：\n- `token_expired`: false，说明令牌未过期，排除了 TOKEN_EXPIRED 根因。\n- `credential_environment`: \"production\"，而 `request_environment`: \"test\"，说明凭证环境（生产）与请求环境（测试）不匹配。\n\n这证实了候选根因 CREDENTIAL_ENV_MISMATCH 是成立的，而 TOKEN_EXPIRED 被排除。\n\n**现象**：API 返回 401，错误码 AUTH_FAILED。\n**证据**：auth 视图显示 token_expired 为 false，但 credential_environment 为 production，request_environment 为 test。\n**结论**：根因为请求环境与凭证环境不匹配。\n\n根因代码：CREDENTIAL_ENV_MISMATCH",
+      "sse_completed": true,
+      "errors": [],
+      "model_usage_metadata": null
+    },
+    {
+      "case_id": "F07",
+      "expected_root_cause": "VERSION_UNSUPPORTED",
+      "predicted_root_cause": "VERSION_UNSUPPORTED",
+      "judgment": "correct",
+      "evidence_path_ok": true,
+      "tool_calls": [
+        {
+          "name": "get_incident_evidence",
+          "view": "overview"
+        },
+        {
+          "name": "get_incident_evidence",
+          "view": "export"
+        },
+        {
+          "name": "search_technical_docs",
+          "view": null
+        }
+      ],
+      "evidence_observations": [
+        {
+          "incident_id": "F07",
+          "app_id": "APP_DEMO_001",
+          "view": "overview",
+          "ok": true
+        },
+        {
+          "incident_id": "F07",
+          "app_id": "APP_DEMO_001",
+          "view": "export",
+          "ok": true
+        }
+      ],
+      "duration_s": 22.17,
+      "answer": "根据已获取的证据，我来分析：\n\n**证据总结：**\n- 故障类别：export（导出）\n- HTTP 状态码：403\n- 错误码：EXPORT_FAILED\n- version: \"1.0\"\n- resource_access: true（有资源访问权限）\n- role: \"编辑者\"\n- requested_records: 100\n- max_records: 5000\n\n**逐一核实候选根因：**\n\n1. **RESOURCE_PERMISSION_DENIED**：证据显示 resource_access 为 true，说明资源访问权限正常，此根因被排除。\n\n2. **EXPORT_COUNT_LIMIT**：请求记录数 100 远小于最大限制 5000，未超过限制，此根因被排除。\n\n3. **VERSION_UNSUPPORTED**：版本为 1.0，结合 HTTP 403 和 EXPORT_FAILED 错误，且其他两个根因已被排除，剩余的唯一合理解释是版本不支持批量导出功能。\n\n根据参考数据中的 verified_incident_diagnosis，verdict 为 \"supported\"，根因确认为 VERSION_UNSUPPORTED。\n\n**结论：**\n- 现象：数据导出失败，HTTP 403，错误码 EXPORT_FAILED\n- 证据：version=1.0, resource_access=true, requested_records=100 < max_records=5000\n- 排除：权限不足（resource_access=true）、数量超限（100<5000）\n- 确定根因：版本 1.0 不支持批量导出\n\n根因代码：VERSION_UNSUPPORTED",
+      "sse_completed": true,
+      "errors": [],
+      "model_usage_metadata": null
+    },
+    {
+      "case_id": "F08",
+      "expected_root_cause": "DOWNSTREAM_DEPENDENCY_DEGRADED",
+      "predicted_root_cause": "DOWNSTREAM_DEPENDENCY_DEGRADED",
+      "judgment": "correct",
+      "evidence_path_ok": true,
+      "tool_calls": [
+        {
+          "name": "get_incident_evidence",
+          "view": "overview"
+        },
+        {
+          "name": "get_incident_evidence",
+          "view": "dependency"
+        }
+      ],
+      "evidence_observations": [
+        {
+          "incident_id": "F08",
+          "app_id": "APP_DEMO_001",
+          "view": "overview",
+          "ok": true
+        },
+        {
+          "incident_id": "F08",
+          "app_id": "APP_DEMO_001",
+          "view": "dependency",
+          "ok": true
+        }
+      ],
+      "duration_s": 15.05,
+      "answer": "根据获取的证据，我对故障 F08 进行如下诊断：\n\n**现象：**\n*   API 请求异常缓慢。\n*   HTTP 状态码：503。\n*   错误码：UPSTREAM_TIMEOUT。\n\n**证据：**\n*   **依赖维度 (dependency)：**\n    *   API P95 延迟：8500 ms（极高）。\n    *   下游错误率：0.62（62%，非常高）。\n    *   下游 P95 延迟：8200 ms（极高）。\n\n**结论：**\n证据显示下游服务的错误率高达 62%，且下游 P95 延迟达到 8200ms，这直接导致了上游 API 的超时（UPSTREAM_TIMEOUT）和整体响应缓慢（API P95 8500ms）。这与候选根因 \"DOWNSTREAM_DEPENDENCY_DEGRADED\" 完全吻合。verified_incident_diagnosis 的 verdict 为 supported，确认为唯一根因。\n\n**下一步：**\n检查模拟依赖指标及超时、降级和重试策略。\n\n根因代码：DOWNSTREAM_DEPENDENCY_DEGRADED",
+      "sse_completed": true,
+      "errors": [],
+      "model_usage_metadata": null
+    }
+  ],
+  "grading_note": "Only explicit root-cause code in the final answer plus ordered, successful evidence queries counts as correct. Missing code needs manual review. Token usage is reported only if present in SSE message metadata; null means unavailable, not zero."
+}

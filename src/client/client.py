@@ -372,3 +372,50 @@ class AgentClient:
             raise AgentClientError(f"Error: {e}")
 
         return ChatHistory.model_validate(response.json())
+
+    def _saas_request(self, method: str, path: str, **kwargs) -> dict[str, Any]:
+        try:
+            response = httpx.request(
+                method,
+                f"{self.base_url}/saas{path}",
+                headers=self._headers,
+                timeout=self.timeout or 20,
+                **kwargs,
+            )
+            response.raise_for_status()
+            return response.json() if response.content else {}
+        except httpx.HTTPError as error:
+            raise AgentClientError(f"Error: {error}") from error
+
+    def create_workspace(self) -> str:
+        return str(self._saas_request("POST", "/workspace")["token"])
+
+    def get_memories(self) -> dict[str, Any]:
+        return self._saas_request("GET", "/memories")
+
+    def set_auto_memory(self, enabled: bool) -> dict[str, Any]:
+        return self._saas_request(
+            "PATCH", "/memory-settings", json={"auto_memory_enabled": enabled}
+        )
+
+    def delete_memory(self, memory_id: int) -> None:
+        self._saas_request("DELETE", f"/memories/{memory_id}")
+
+    def clear_memories(self) -> int:
+        return int(self._saas_request("DELETE", "/memories").get("deleted", 0))
+
+    def list_conversations(
+        self, *, search: str = "", limit: int = 50, offset: int = 0
+    ) -> list[dict[str, Any]]:
+        result = self._saas_request(
+            "GET",
+            "/conversations",
+            params={"search": search, "limit": limit, "offset": offset},
+        )
+        return list(result.get("items", []))
+
+    def rename_conversation(self, thread_id: str, title: str) -> dict[str, Any]:
+        return self._saas_request("PATCH", f"/conversations/{thread_id}", json={"title": title})
+
+    def delete_conversation(self, thread_id: str) -> None:
+        self._saas_request("DELETE", f"/conversations/{thread_id}")

@@ -95,7 +95,17 @@ async def main() -> None:
             st.markdown("The service might be booting up. Try again in a few seconds.")
             st.stop()
     agent_client: AgentClient = st.session_state.agent_client
-    agent_client.profile_token = st.session_state.get("support_token")
+    is_saas = agent_client.agent in {"saas-support", "customer-support"}
+    if is_saas:
+        from client.support_panel import initialize_identity
+
+        try:
+            initialize_identity(agent_client)
+        except AgentClientError as error:
+            st.error(f"无法创建或恢复本地访客身份：{error}")
+            st.stop()
+    else:
+        agent_client.profile_token = st.session_state.get("support_token")
 
     # Initialize voice manager (once per session)
     if "voice_manager" not in st.session_state:
@@ -111,29 +121,25 @@ async def main() -> None:
             try:
                 messages: ChatHistory = agent_client.get_history(thread_id=thread_id).messages
             except AgentClientError:
-                st.error("No message history found for this Thread ID.")
+                st.warning("该历史会话不存在、已删除或不属于当前身份。")
+                thread_id = str(uuid.uuid4())
+                st.query_params.pop("thread_id", None)
                 messages = []
         st.session_state.messages = messages
         st.session_state.thread_id = thread_id
 
     # Config options
     with st.sidebar:
-        if agent_client.agent in {"saas-support", "customer-support"}:
-            from client.support_panel import panel
-            panel(agent_client)
-        st.header(f"{APP_ICON} {APP_TITLE}")
+        st.header("星河协作平台技术支持" if is_saas else f"{APP_ICON} {APP_TITLE}")
+        if is_saas:
+            from client.support_panel import conversation_sidebar
 
-        ""
-        "Full toolkit for running an AI agent service built with LangGraph, FastAPI and Streamlit"
-        ""
-
-        if st.button(":material/chat: New Chat", use_container_width=True):
+            conversation_sidebar(agent_client)
+        elif st.button(":material/chat: New Chat", use_container_width=True):
             st.session_state.messages = []
             st.session_state.thread_id = str(uuid.uuid4())
             st.query_params.pop("thread_id", None)
-            # Clear saved audio when starting new chat
-            if "last_audio" in st.session_state:
-                del st.session_state.last_audio
+            st.session_state.pop("last_audio", None)
             st.rerun()
 
         with st.popover(":material/settings: Settings", use_container_width=True):
@@ -166,6 +172,11 @@ async def main() -> None:
             # Display user ID (for debugging or user information)
             st.text_input("User ID (read-only)", value=user_id, disabled=True)
 
+        if is_saas:
+            from client.support_panel import panel
+
+            panel(agent_client)
+
         @st.dialog("Architecture")
         def architecture_dialog() -> None:
             st.image(
@@ -180,9 +191,10 @@ async def main() -> None:
             architecture_dialog()
 
         with st.popover(":material/policy: Privacy", use_container_width=True):
-            st.write(
-                "Prompts, responses and feedback in this app are anonymously recorded and saved to LangSmith for product evaluation and improvement purposes only."
-            )
+            if is_saas:
+                st.write("对话、记忆、评分和Trace保存在本地服务。验证码、Token和密钥不应写入聊天。")
+            else:
+                st.write("对话和反馈可能用于本地评估，请勿提交敏感信息。")
 
         @st.dialog("Share/resume chat")
         def share_chat_dialog() -> None:
@@ -201,12 +213,9 @@ async def main() -> None:
             is_local = parsed_url.hostname in {"localhost", "127.0.0.1", "0.0.0.0"}
             if not st_base_url.startswith("https") and not is_local:
                 st_base_url = st_base_url.replace("http", "https")
-            # Include both thread_id and user_id in the URL for sharing to maintain user identity
-            chat_url = (
-                f"{st_base_url}?thread_id={st.session_state.thread_id}&{USER_ID_COOKIE}={user_id}"
-            )
+            chat_url = f"{st_base_url}?thread_id={st.session_state.thread_id}"
             st.markdown(f"**Chat URL:**\n```text\n{chat_url}\n```")
-            st.info("Copy the above URL to share or revisit this chat")
+            st.info("该链接不包含身份凭证，只能在已恢复同一身份的浏览器中打开。")
 
         if st.button(":material/upload: Share/resume chat", use_container_width=True):
             share_chat_dialog()

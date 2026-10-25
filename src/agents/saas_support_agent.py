@@ -39,8 +39,11 @@ class SaaSSupportAgent(LazyLoadingAgent):
                 max_retries=2,
                 extra_body={"enable_thinking": False},
             )
+            structured_model = model.bind(response_format={"type": "json_object"})
             self._graph = build_technical_support_graph(
-                model, planner=model.bind(response_format={"type": "json_object"})
+                model,
+                planner=structured_model,
+                memory_extractor=structured_model,
             )
             logger.info("SaaS support mode: Qwen (documents, diagnostics and approved tickets)")
         else:

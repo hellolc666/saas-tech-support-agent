@@ -27,6 +27,10 @@ headers = (
 results = []
 with httpx.Client(base_url=args.base_url, headers=headers, trust_env=False, timeout=180) as c:
     c.get("/info").raise_for_status()
+    workspace = c.post("/saas/workspace")
+    workspace.raise_for_status()
+    profile_token = workspace.json()["token"]
+    c.headers["X-SaaS-Token"] = profile_token
 
     def run(name, turns, expected_tool=None, terms=()):
         tid = str(uuid.uuid4())
@@ -34,7 +38,14 @@ with httpx.Client(base_url=args.base_url, headers=headers, trust_env=False, time
         start = time.monotonic()
         try:
             for text in turns:
-                r = c.post("/saas-support/invoke", json={"message": text, "thread_id": tid})
+                r = c.post(
+                    "/saas-support/invoke",
+                    json={
+                        "message": text,
+                        "thread_id": tid,
+                        "agent_config": {"profile_token": profile_token},
+                    },
+                )
                 r.raise_for_status()
                 answers.append(r.json()["content"])
             h = c.post("/history", json={"thread_id": tid})
@@ -105,6 +116,7 @@ with httpx.Client(base_url=args.base_url, headers=headers, trust_env=False, time
                 "message": "401登录失效怎么办？",
                 "thread_id": str(uuid.uuid4()),
                 "stream_tokens": True,
+                "agent_config": {"profile_token": profile_token},
             },
         )
         r.raise_for_status()
